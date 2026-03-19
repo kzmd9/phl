@@ -160,13 +160,13 @@
         }
 
         /* Меню */
-        .nav-menu { display: flex; gap: 30px; }
+        .nav-menu { display: flex; gap: 15px; align-items: center; }
 
-        .nav-menu a {
+        .nav-link {
             text-decoration: none;
             color: var(--text-muted);
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             padding: 8px 16px;
             border-radius: 6px;
             transition: all 0.3s ease;
@@ -174,9 +174,10 @@
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
+            border: 2px solid transparent;
         }
 
-        .nav-menu a::after {
+        .nav-link::after {
             content: '';
             position: absolute;
             bottom: 0; left: 50%;
@@ -186,11 +187,12 @@
             transform: translateX(-50%);
         }
 
-        .nav-menu a:hover::after, .nav-menu a.active::after { width: 80%; }
+        .nav-link:hover::after, .nav-link.active::after { width: 80%; }
 
-        .nav-menu a:hover, .nav-menu a.active {
+        .nav-link:hover, .nav-link.active {
             color: var(--teal-light);
             background: rgba(20, 184, 166, 0.1);
+            border-color: rgba(20, 184, 166, 0.3);
         }
 
         /* --- Hero Section --- */
@@ -222,7 +224,7 @@
 
         @media (max-width: 900px) {
             .dashboard-grid { grid-template-columns: 1fr; }
-            .nav-menu { display: none; }
+            .nav-menu { flex-wrap: wrap; justify-content: center; }
         }
 
         .section-header {
@@ -501,12 +503,8 @@
             vertical-align: middle;
         }
 
-        /* Первая колонка - игрок (rank + avatar + name) */
-        .leaderboard-table td:first-child {
-            width: 70%;
-        }
+        .leaderboard-table td:first-child { width: 70%; }
 
-        /* Вторая колонка - голы */
         .leaderboard-table td:last-child {
             text-align: center;
             min-width: 60px;
@@ -517,9 +515,7 @@
             background: rgba(20, 184, 166, 0.15);
         }
 
-        .leaderboard-table tr:hover td:last-child {
-            transform: none;
-        }
+        .leaderboard-table tr:hover td:last-child { transform: none; }
 
         .player-row { 
             display: flex; 
@@ -719,8 +715,8 @@
         @media (max-width: 768px) {
             .season-title { font-size: 36px; }
             .header-wrapper { flex-direction: column; height: auto; padding: 15px 0; gap: 15px; }
-            .nav-menu { gap: 15px; }
-            .nav-menu a { font-size: 13px; padding: 6px 12px; }
+            .nav-menu { gap: 10px; }
+            .nav-link { font-size: 12px; padding: 6px 12px; }
             .match-body { flex-direction: column; gap: 20px; padding: 20px; }
             .team { width: 100%; }
             .team.right { justify-content: flex-start; text-align: left; }
@@ -746,9 +742,10 @@
                 </div>
 
                 <nav class="nav-menu">
-                    <a href="#" class="active">Матчи</a>
-                    <a href="#">Команды</a>
-                    <a href="#">Игроки</a>
+                    <a href="index.html" class="nav-link active">Матчи</a>
+                    <a href="teams.html" class="nav-link">Команды</a>
+                    <a href="players.html" class="nav-link">Игроки</a>
+                    <a href="Standings.html" class="nav-link">Таблица</a>
                 </nav>
             </div>
         </div>

@@ -20,6 +20,7 @@
             --danger: #ef4444;
             --success: #10b981;
             --glow: 0 0 20px rgba(20, 184, 166, 0.3);
+            --warning: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -78,18 +79,10 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        .ease-smooth { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-        .ease-bounce { transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
-
         .animate-fade { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-fade-up { animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-slide-left { animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-slide-right { animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
 
         /* --- Header --- */
         header {
@@ -621,6 +614,23 @@
             animation: shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
+        .error-message {
+            text-align: center;
+            color: var(--danger);
+            padding: 30px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .error-details {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-family: monospace;
+        }
+
         .refresh-btn {
             display: block;
             width: 100%;
@@ -853,13 +863,38 @@
     <script>
         // 🔗 Матчи из Google Таблицы
         const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv';
-        const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-        const isLocal = window.location.protocol === 'file:';
-        const MATCHES_URL = isLocal ? CORS_PROXY + encodeURIComponent(MATCHES_CSV) : MATCHES_CSV;
         
-        // 🔗 Топ бомбардиров из Google Таблицы
-        const TOP_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv&gid=0&single=true';
-        const TOP_URL = isLocal ? CORS_PROXY + encodeURIComponent(TOP_CSV) : TOP_CSV;
+        // 🔗 Топ бомбардиров из Google Таблицы (отдельный лист)
+        const TOP_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv';
+        
+        const CORS_PROXIES = [
+            'https://api.allorigins.win/raw?url=',
+            'https://corsproxy.io/?',
+            'https://api.codetabs.com/v1/proxy?quest='
+        ];
+
+        // Загрузка с несколькими прокси
+        async function fetchWithProxy(url) {
+            // Пробуем без прокси сначала (для GitHub Pages)
+            try {
+                const response = await fetch(url);
+                if (response.ok) return await response.text();
+            } catch (e) {
+                console.log('Без прокси не вышло, пробуем прокси...');
+            }
+            
+            // Пробуем прокси
+            for (const proxy of CORS_PROXIES) {
+                try {
+                    const response = await fetch(proxy + encodeURIComponent(url));
+                    if (response.ok) return await response.text();
+                } catch (e) {
+                    console.log(`Прокси ${proxy} не сработал`);
+                }
+            }
+            
+            throw new Error('Не удалось загрузить данные ни через один источник');
+        }
 
         // Загрузка матчей
         async function loadMatches() {
@@ -867,13 +902,33 @@
             if (!container) return;
             
             try {
-                const response = await fetch(MATCHES_URL);
-                const csvText = await response.text();
+                const csvText = await fetchWithProxy(MATCHES_CSV);
                 const matches = parseMatchesCSV(csvText);
+                
+                if (matches.length === 0) {
+                    container.innerHTML = `
+                        <div class="match-card">
+                            <div class="error-message">
+                                ⚠️ Нет данных в таблице
+                                <div class="error-details">Проверьте, что в таблице есть данные со 2-й строки</div>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
                 renderMatches(matches, container);
             } catch (error) {
                 console.error('Ошибка загрузки матчей:', error);
-                container.innerHTML = '<div class="match-card"><div class="loading" style="color: var(--danger)">❌ Ошибка загрузки</div></div>';
+                container.innerHTML = `
+                    <div class="match-card">
+                        <div class="error-message">
+                            ❌ Ошибка загрузки матчей
+                            <div class="error-details">${error.message}</div>
+                            <button class="refresh-btn" onclick="loadMatches()" style="margin-top: 15px;">Попробовать снова</button>
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -888,17 +943,17 @@
                 if (!line) continue;
                 
                 const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                if (parts.length >= 8) {
+                if (parts.length >= 7) {
                     matches.push({
-                        date: parts[0],
-                        time: parts[1],
-                        team1: parts[2],
-                        team2: parts[3],
-                        score1: parts[4],
-                        score2: parts[5],
-                        location: parts[6],
-                        status: parts[7],
-                        extra: parts[8] || '' // Столбец "Доп"
+                        date: parts[0] || '',
+                        time: parts[1] || '',
+                        team1: parts[2] || '',
+                        team2: parts[3] || '',
+                        score1: parts[4] || '0',
+                        score2: parts[5] || '0',
+                        location: parts[6] || '',
+                        status: parts[7] || '',
+                        extra: parts[8] || ''
                     });
                 }
             }
@@ -909,28 +964,21 @@
         function renderMatches(matches, container) {
             container.innerHTML = '';
             
-            // Сортировка: LIVE сначала, потом по дате
             matches.sort((a, b) => {
                 if (a.status === 'LIVE') return -1;
                 if (b.status === 'LIVE') return 1;
                 return 0;
             });
             
-            if (matches.length === 0) {
-                container.innerHTML = '<div class="match-card"><div class="loading">Нет матчей</div></div>';
-                return;
-            }
-            
             matches.forEach((match, index) => {
                 const isLive = match.status === 'LIVE';
                 
-                // Определяем тип завершения матча
                 let resultText = 'Основное время';
-                if (match.extra.toUpperCase() === 'БУЛ') {
+                if (match.extra.toUpperCase().includes('БУЛ')) {
                     resultText = 'По буллитам';
-                } else if (match.extra.toUpperCase() === 'ОТ') {
+                } else if (match.extra.toUpperCase().includes('ОТ')) {
                     resultText = 'Овертайм';
-                } else if (match.extra.toUpperCase() === 'ОСНОВ') {
+                } else if (match.extra.toUpperCase().includes('ОСНОВ')) {
                     resultText = 'Основное время';
                 }
                 
@@ -955,9 +1003,9 @@
                             </div>
                         </div>
                         <div class="match-score">
-                            <span class="score-value">${match.score1 || '0'}</span>
+                            <span class="score-value">${match.score1}</span>
                             <span class="score-separator">-</span>
-                            <span class="score-value">${match.score2 || '0'}</span>
+                            <span class="score-value">${match.score2}</span>
                         </div>
                         <div class="team right">
                             <div class="team-info">
@@ -985,8 +1033,7 @@
             tbody.innerHTML = '<tr><td colspan="2" class="loading">⏳ Загрузка...</td></tr>';
             
             try {
-                const response = await fetch(TOP_URL);
-                const csvText = await response.text();
+                const csvText = await fetchWithProxy(TOP_CSV);
                 const lines = csvText.split('\n').filter(line => line.trim());
                 
                 if (lines.length < 2) throw new Error('Таблица пуста');
@@ -1001,7 +1048,7 @@
                     if (nick && nick.length > 0) players.push({ nick, goals });
                 }
                 
-                if (players.length === 0) throw new Error('Нет игроков');
+                if (players.length === 0) throw new Error('Нет игроков в таблице');
                 
                 players.sort((a, b) => b.goals - a.goals);
                 const top = players.slice(0, 10);
@@ -1034,7 +1081,16 @@
                 
             } catch (error) {
                 console.error('Ошибка:', error);
-                tbody.innerHTML = `<tr><td colspan="2" class="loading" style="color: var(--danger)">❌ ${error.message}</td></tr>`;
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="2">
+                            <div class="error-message" style="padding: 20px;">
+                                ❌ Ошибка загрузки
+                                <div class="error-details">${error.message}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             }
         }
         

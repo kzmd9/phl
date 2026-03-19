@@ -131,13 +131,15 @@
             font-weight: 700;
             color: white;
             border: 2px solid var(--teal-light);
-            animation: float 3s ease-in-out infinite;
+            /* Убрана постоянная анимация, теперь только при наведении */
             transition: all 0.3s ease;
         }
 
+        /* Анимация логотипа только при наведении */
         .logo-section:hover .logo-shield {
             box-shadow: var(--glow);
             border-color: var(--teal-light);
+            animation: float 2s ease-in-out infinite;
         }
 
         .logo-text { display: flex; flex-direction: column; }
@@ -495,12 +497,18 @@
             font-weight: 600;
         }
 
-        .leaderboard-table td {
+        /* Объединённая подсветка строки */
+        .leaderboard-table tbody tr {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .leaderboard-table tbody tr td {
             padding: 12px 15px;
             background: rgba(15, 35, 35, 0.6);
             border-radius: 8px;
-            transition: all 0.3s ease;
             vertical-align: middle;
+            transition: all 0.3s ease;
         }
 
         .leaderboard-table td:first-child { width: 70%; }
@@ -511,11 +519,12 @@
             position: relative;
         }
 
-        .leaderboard-table tr:hover td {
+        /* Подсветка всей строки одним прямоугольником */
+        .leaderboard-table tbody tr:hover td {
             background: rgba(20, 184, 166, 0.15);
+            box-shadow: 0 0 20px rgba(20, 184, 166, 0.2);
+            border: 1px solid rgba(20, 184, 166, 0.4);
         }
-
-        .leaderboard-table tr:hover td:last-child { transform: none; }
 
         .player-row { 
             display: flex; 
@@ -533,9 +542,14 @@
             flex-shrink: 0;
         }
 
-        .rank.gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+        .rank.gold { color: #fbbf24; }
         .rank.silver { color: #94a3b8; }
         .rank.bronze { color: #b45309; }
+
+        .leaderboard-table tbody tr:hover .rank {
+            color: var(--teal-light);
+            text-shadow: 0 0 10px rgba(20, 184, 166, 0.6);
+        }
 
         .player-avatar {
             width: 36px;
@@ -545,11 +559,11 @@
             background-size: cover;
             image-rendering: pixelated;
             border: 2px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             flex-shrink: 0;
         }
 
-        .leaderboard-table tr:hover .player-avatar {
+        .leaderboard-table tbody tr:hover .player-avatar {
             border-color: var(--teal-light);
             box-shadow: 0 0 15px rgba(20, 184, 166, 0.4);
             transform: scale(1.08);
@@ -565,7 +579,7 @@
             text-overflow: ellipsis;
         }
 
-        .leaderboard-table tr:hover .player-name { 
+        .leaderboard-table tbody tr:hover .player-name { 
             color: var(--teal-light);
             text-shadow: 0 0 10px rgba(20, 184, 166, 0.4);
         }
@@ -581,7 +595,7 @@
             width: 100%;
         }
 
-        .leaderboard-table tr:hover .stat-value {
+        .leaderboard-table tbody tr:hover .stat-value {
             transform: scale(1.15);
             text-shadow: 0 0 15px rgba(20, 184, 166, 0.8);
         }

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Топ Бомбардиров - Minecraft Hockey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Russo+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a; --bg-card: #1e293b; --bg-hover: #334155;
+            --accent-cyan: #06b6d4; --text-main: #f8fafc; --text-muted: #94a3b8;
+            --border-color: #334155; --danger: #ef4444; --success: #10b981;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif; background: var(--bg-dark);
+            color: var(--text-main); padding: 20px; min-height: 100vh;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { text-align: center; padding: 30px 0; }
+        .header h1 {
+            font-family: 'Russo One', sans-serif; font-size: 28px;
+            color: var(--accent-cyan); margin-bottom: 8px;
+        }
+        .header p { color: var(--text-muted); font-size: 14px; }
+        .status {
+            padding: 12px 20px; border-radius: 8px; margin-bottom: 20px;
+            font-size: 14px; text-align: center;
+        }
+        .status.loading { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+        .status.success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .status.error { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 20px;
+        }
+        .top-list { list-style: none; }
+        .top-item {
+            display: flex; align-items: center; padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .top-item:last-child { border-bottom: none; }
+        .rank {
+            width: 30px; font-weight: 700; color: var(--text-muted); font-size: 18px;
+        }
+        .rank.top-1 { color: #fbbf24; }
+        .rank.top-2 { color: #94a3b8; }
+        .rank.top-3 { color: #b45309; }
+        .player { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .avatar {
+            width: 48px; height: 48px; border-radius: 10px;
+            background: var(--bg-hover); background-size: cover;
+            image-rendering: pixelated; border: 2px solid var(--border-color);
+        }
+        .nickname { font-weight: 600; font-size: 15px; }
+        .goals {
+            font-family: 'Russo One', sans-serif; font-size: 20px;
+            color: var(--accent-cyan); min-width: 40px; text-align: right;
+        }
+        .loading-row { text-align: center; padding: 30px; color: var(--text-muted); }
+        .debug {
+            margin-top: 20px; padding: 15px; background: var(--bg-dark);
+            border-radius: 8px; font-size: 11px; font-family: monospace;
+            color: var(--text-muted); white-space: pre-wrap;
+            max-height: 100px; overflow: auto; display: none;
+        }
+        .btn {
+            display: block; width: 100%; padding: 12px; margin-top: 15px;
+            background: var(--accent-cyan); color: var(--bg-dark); border: none;
+            border-radius: 8px; font-weight: 600; cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .toggle-debug {
+            display: block; width: 100%; padding: 8px; margin-top: 10px;
+            background: var(--bg-hover); color: var(--text-muted);
+            border: none; border-radius: 6px; font-size: 12px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Топ Бомбардиров</h1>
+            <p>Данные из Гугл Таблицы • Обновляется автоматически</p>
+        </div>
+        
+        <div id="status" class="status loading">⏳ Загрузка статистики...</div>
+        
+        <div class="card">
+            <ul class="top-list" id="topList">
+                <li class="loading-row">Загрузка данных...</li>
+            </ul>
+            <button class="btn" id="refreshBtn" onclick="loadTop()">🔄 Обновить</button>
+            <button class="toggle-debug" onclick="toggleDebug()">🐛 Показать лог</button>
+        </div>
+        
+        <div class="debug" id="debug"></div>
+    </div>
+
+    <script>
+        // 🔗 Ссылка на Гугл Таблицу (чище, без пробелов)
+        const GOOGLE_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv&gid=0&single=true';
+        
+        // 🔄 CORS-прокси для локальных тестов (на GitHub Pages не нужен)
+        const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+        
+        // Определяем, откуда запускаем
+        const isLocal = window.location.protocol === 'file:';
+        const CSV_URL = isLocal ? CORS_PROXY + encodeURIComponent(GOOGLE_CSV) : GOOGLE_CSV;
+        
+        const statusEl = document.getElementById('status');
+        const topListEl = document.getElementById('topList');
+        const debugEl = document.getElementById('debug');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        function toggleDebug() {
+            debugEl.style.display = debugEl.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function loadTop() {
+            statusEl.className = 'status loading';
+            statusEl.textContent = '⏳ Загрузка...';
+            debugEl.textContent = '';
+            refreshBtn.disabled = true;
+            topListEl.innerHTML = '<li class="loading-row">Загрузка...</li>';
+            
+            try {
+                debugEl.textContent += `🌐 Запрос к: ${CSV_URL.slice(0, 100)}...\n`;
+                
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const csvText = await response.text();
+                debugEl.textContent += `✅ Ответ: ${csvText.length} байт\n`;
+                
+                const lines = csvText.split('\n').filter(line => line.trim());
+                if (lines.length < 2) throw new Error('Таблица пуста');
+                
+                const players = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
+                    const nick = parts[0];
+                    const goals = parseInt(parts[1]) || 0;
+                    if (nick && nick.length > 0) {
+                        players.push({ nick, goals });
+                    }
+                }
+                
+                debugEl.textContent += `✅ Найдено игроков: ${players.length}\n`;
+                
+                if (players.length === 0) throw new Error('Нет игроков в таблице');
+                
+                players.sort((a, b) => b.goals - a.goals);
+                showTop(players.slice(0, 10));
+                
+                statusEl.className = 'status success';
+                statusEl.textContent = `✅ Загружено: ${players.length} игроков`;
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                statusEl.className = 'status error';
+                statusEl.textContent = `❌ ${error.message}`;
+                debugEl.textContent += `❌ ${error.stack}\n`;
+                topListEl.innerHTML = `<li class="loading-row" style="color:var(--danger)">Не удалось загрузить</li>`;
+            } finally {
+                refreshBtn.disabled = false;
+            }
+        }
+
+        function showTop(players) {
+            topListEl.innerHTML = '';
+            players.forEach((player, index) => {
+                const li = document.createElement('li');
+                li.className = 'top-item';
+                const rankClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
+                li.innerHTML = `
+                    <div class="rank ${rankClass}">#${index + 1}</div>
+                    <div class="player">
+                        <div class="avatar" 
+                             style="background-image: url('https://mc-heads.net/avatar/${encodeURIComponent(player.nick)}')"
+                             onerror="this.style.background='var(--bg-hover)';this.textContent='❓'">
+                        </div>
+                        <span class="nickname">${escapeHtml(player.nick)}</span>
+                    </div>
+                    <div class="goals">${player.goals}</div>
+                `;
+                topListEl.appendChild(li);
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTop);
+    </script>
+</body>
+</html>

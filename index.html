@@ -26,15 +26,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--teal-dark);
-            /* Зигзаг фон как на изображении */
-            background-image: repeating-linear-gradient(
-                135deg,
-                var(--teal-dark) 0px,
-                var(--teal-dark) 20px,
-                var(--teal-medium) 20px,
-                var(--teal-medium) 40px
-            );
-            background-attachment: fixed;
+            /* Убраны полосы, оставлен только тёмно-зелёный цвет */
             color: var(--text-main);
             line-height: 1.6;
             min-height: 100vh;
@@ -446,16 +438,18 @@
             font-size: 16px;
         }
 
+        /* Обновлённая кнопка - меньше и без эмодзи */
         .refresh-btn {
             display: block;
             width: 100%;
             margin-top: 20px;
-            padding: 12px;
+            padding: 8px 16px;
             background: var(--teal-medium);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
@@ -741,7 +735,7 @@
                             </tbody>
                         </table>
                         <button class="refresh-btn" id="refreshBtn" onclick="loadTopScorers()">
-                            🔄 Обновить
+                            Обновить
                         </button>
                     </div>
                 </div>

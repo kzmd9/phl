@@ -68,11 +68,6 @@
             100% { background-position: 200% 0; }
         }
 
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
         @keyframes slideInRight {
             from { opacity: 0; transform: translateX(30px); }
             to { opacity: 1; transform: translateX(0); }
@@ -80,13 +75,7 @@
 
         .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
         .animate-fade-up { animation: fadeInUp 0.6s ease-out forwards; }
-        .animate-slide-left { animation: slideInLeft 0.5s ease-out forwards; }
-        .animate-slide-right { animation: slideInRight 0.5s ease-out forwards; }
-        
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
+        .animate-slide-right { animation: slideInRight 0.6s ease-out forwards; }
 
         /* --- Header --- */
         header {
@@ -213,12 +202,6 @@
             animation: pulseGlow 3s ease-in-out infinite;
         }
 
-        .season-subtitle {
-            color: var(--text-muted);
-            font-size: 16px;
-            animation: fadeIn 1s ease-out 0.3s both;
-        }
-
         /* --- Main Content --- */
         .main-content { padding: 40px 0 60px; }
 
@@ -231,7 +214,7 @@
             opacity: 0;
             animation: slideInRight 0.6s ease-out 0.3s forwards;
             transition: all 0.3s ease;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -272,7 +255,7 @@
         .leaderboard-table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 8px;
+            border-spacing: 0 12px; /* Увеличенное расстояние между строками */
         }
 
         .leaderboard-table th {
@@ -285,30 +268,37 @@
             font-weight: 600;
         }
 
+        /* Объединённая ячейка для всей строки */
         .leaderboard-table tbody tr {
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .leaderboard-table tbody tr td {
-            padding: 12px 15px;
+            padding: 16px 20px; /* Увеличенные отступы */
             background: rgba(15, 35, 35, 0.6);
-            border-radius: 8px;
             vertical-align: middle;
             transition: all 0.3s ease;
         }
 
-        .leaderboard-table td:first-child { width: 70%; }
+        /* Первая ячейка занимает всю ширину */
+        .leaderboard-table tbody tr td:first-child {
+            border-radius: 8px 0 0 8px;
+            width: 75%;
+        }
 
-        .leaderboard-table td:last-child {
+        /* Вторая ячейка с голами */
+        .leaderboard-table tbody tr td:last-child {
+            border-radius: 0 8px 8px 0;
             text-align: center;
-            min-width: 60px;
+            min-width: 80px;
             position: relative;
         }
 
+        /* Объединённая подсветка всей строки одним прямоугольником */
         .leaderboard-table tbody tr:hover td {
             background: rgba(20, 184, 166, 0.15);
-            box-shadow: 0 0 20px rgba(20, 184, 166, 0.2);
+            box-shadow: 0 0 25px rgba(20, 184, 166, 0.25);
             border: 1px solid rgba(20, 184, 166, 0.4);
         }
 
@@ -321,7 +311,7 @@
         .rank {
             font-family: 'Russo One', sans-serif;
             font-size: 16px;
-            width: 28px;
+            width: 32px;
             text-align: center;
             color: var(--text-muted);
             transition: all 0.3s ease;
@@ -338,8 +328,8 @@
         }
 
         .player-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
             background: var(--teal-dark);
             background-size: cover;
@@ -357,7 +347,7 @@
 
         .player-name {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--text-main);
             transition: color 0.3s ease;
             white-space: nowrap;
@@ -372,7 +362,7 @@
 
         .stat-value {
             font-family: 'Russo One', sans-serif;
-            font-size: 18px;
+            font-size: 20px;
             color: var(--teal-light);
             transition: all 0.3s ease;
             display: inline-block;
@@ -520,6 +510,7 @@
             .section-title { font-size: 20px; }
             .footer-content { flex-direction: column; text-align: center; }
             .top-card { padding: 20px; }
+            .player-avatar { width: 36px; height: 36px; }
         }
     </style>
 </head>
@@ -551,7 +542,6 @@
     <section class="hero">
         <div class="container">
             <h1 class="season-title">Топ Бомбардиров</h1>
-            <p class="season-subtitle">PHL 3 2026 • Данные из Гугл Таблицы</p>
         </div>
     </section>
 
@@ -560,7 +550,7 @@
         <div class="container">
             <div class="top-card">
                 <div class="section-header">
-                    <h2 class="section-title">🏆 Лучшие снайперы сезона</h2>
+                    <h2 class="section-title">Лучшие снайперы сезона</h2>
                 </div>
                 
                 <table class="leaderboard-table">
@@ -636,14 +626,15 @@
                 if (players.length === 0) throw new Error('Нет игроков');
                 
                 players.sort((a, b) => b.goals - a.goals);
-                const top = players.slice(0, 20);
+                // Убрано ограничение на 20 игроков - показываются все
+                const top = players;
                 
                 tbody.innerHTML = '';
                 top.forEach((player, index) => {
                     const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
                     const tr = document.createElement('tr');
                     tr.style.opacity = '0';
-                    tr.style.animation = `fadeInUp 0.4s ease-out ${index * 0.05}s forwards`;
+                    tr.style.animation = `fadeInUp 0.4s ease-out ${Math.min(index * 0.03, 0.5)}s forwards`;
                     tr.innerHTML = `
                         <td>
                             <div class="player-row">

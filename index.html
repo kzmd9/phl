@@ -19,6 +19,7 @@
             --border-color: rgba(20, 184, 166, 0.3);
             --danger: #ef4444;
             --success: #10b981;
+            --glow: 0 0 20px rgba(20, 184, 166, 0.3);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,23 +27,66 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--teal-dark);
-            /* Убраны полосы, оставлен только тёмно-зелёный цвет */
             color: var(--text-main);
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Затемнение фона */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(10, 31, 31, 0.7);
             z-index: -1;
         }
+
+        /* --- Анимации --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: var(--glow); }
+            50% { box-shadow: 0 0 35px rgba(20, 184, 166, 0.5); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
+        .animate-fade-up { animation: fadeInUp 0.6s ease-out forwards; }
+        .animate-slide-left { animation: slideInLeft 0.5s ease-out forwards; }
+        .animate-slide-right { animation: slideInRight 0.5s ease-out forwards; }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
 
         /* --- Header --- */
         header {
@@ -52,13 +96,10 @@
             top: 0;
             z-index: 100;
             backdrop-filter: blur(10px);
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 0 20px; 
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
         .header-wrapper {
             display: flex;
@@ -67,12 +108,15 @@
             height: 70px;
         }
 
-        /* Логотип слева */
         .logo-section {
             display: flex;
             align-items: center;
             gap: 15px;
+            cursor: pointer;
+            transition: transform 0.3s;
         }
+
+        .logo-section:hover { transform: scale(1.03); }
 
         .logo-shield {
             width: 50px;
@@ -87,12 +131,16 @@
             font-weight: 700;
             color: white;
             border: 2px solid var(--teal-light);
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s;
         }
 
-        .logo-text {
-            display: flex;
-            flex-direction: column;
+        .logo-section:hover .logo-shield {
+            box-shadow: var(--glow);
+            border-color: var(--teal-light);
         }
+
+        .logo-text { display: flex; flex-direction: column; }
 
         .logo-title {
             font-family: 'Russo One', sans-serif;
@@ -100,7 +148,10 @@
             color: var(--teal-light);
             letter-spacing: 2px;
             line-height: 1;
+            transition: color 0.3s;
         }
+
+        .logo-section:hover .logo-title { color: white; text-shadow: var(--glow); }
 
         .logo-subtitle {
             font-size: 12px;
@@ -108,11 +159,8 @@
             margin-top: 2px;
         }
 
-        /* Меню сверху */
-        .nav-menu {
-            display: flex;
-            gap: 30px;
-        }
+        /* Меню */
+        .nav-menu { display: flex; gap: 30px; }
 
         .nav-menu a {
             text-decoration: none;
@@ -124,7 +172,21 @@
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            width: 0; height: 2px;
+            background: var(--teal-light);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+
+        .nav-menu a:hover::after, .nav-menu a.active::after { width: 80%; }
 
         .nav-menu a:hover, .nav-menu a.active {
             color: var(--teal-light);
@@ -135,6 +197,7 @@
         .hero {
             padding: 50px 0 30px;
             text-align: center;
+            animation: fadeIn 0.8s ease-out;
         }
 
         .season-title {
@@ -145,17 +208,17 @@
             text-transform: uppercase;
             letter-spacing: 3px;
             text-shadow: 0 4px 20px rgba(20, 184, 166, 0.4);
+            animation: pulseGlow 3s ease-in-out infinite;
         }
 
         .season-subtitle {
             color: var(--text-muted);
             font-size: 16px;
+            animation: fadeIn 1s ease-out 0.3s both;
         }
 
         /* --- Main Content --- */
-        .main-content {
-            padding: 40px 0 60px;
-        }
+        .main-content { padding: 40px 0 60px; }
 
         .dashboard-grid {
             display: grid;
@@ -186,6 +249,23 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            transition: all 0.3s;
+        }
+
+        /* Ссылка на топ */
+        .section-title-link {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .section-title-link:hover {
+            color: var(--teal-light);
+            text-shadow: 0 0 15px rgba(20, 184, 166, 0.5);
+            transform: translateX(5px);
         }
 
         .section-title::before {
@@ -195,33 +275,55 @@
             height: 28px;
             background: var(--teal-light);
             border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .section-title-link:hover::before {
+            box-shadow: 0 0 10px var(--teal-light);
+        }
+
+        .section-title::after {
+            content: '→';
+            font-size: 18px;
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: all 0.3s;
+            color: var(--teal-light);
+        }
+
+        .section-title-link:hover::after {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         /* --- Match Cards --- */
-        .matches-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .matches-list { display: flex; flex-direction: column; gap: 20px; }
 
         .match-card {
             background: var(--bg-card);
             border: 2px solid var(--border-color);
             border-radius: 16px;
             overflow: hidden;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
         }
+
+        .match-card:nth-child(1) { animation-delay: 0.1s; }
+        .match-card:nth-child(2) { animation-delay: 0.2s; }
+        .match-card:nth-child(3) { animation-delay: 0.3s; }
+        .match-card:nth-child(4) { animation-delay: 0.4s; }
 
         .match-card:hover {
             border-color: var(--teal-light);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 40px rgba(20, 184, 166, 0.2);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(20, 184, 166, 0.25);
         }
 
         .match-card.live {
             border-color: var(--danger);
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+            animation: pulseGlow 2s ease-in-out infinite;
         }
 
         .match-header {
@@ -255,12 +357,12 @@
             height: 8px;
             background: var(--danger);
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
         }
 
         .match-body {
@@ -275,12 +377,12 @@
             align-items: center;
             gap: 15px;
             flex: 1;
+            transition: transform 0.3s;
         }
 
-        .team.right {
-            justify-content: flex-end;
-            text-align: right;
-        }
+        .team:hover { transform: scale(1.05); }
+
+        .team.right { justify-content: flex-end; text-align: right; }
 
         .team-logo {
             width: 50px;
@@ -292,12 +394,15 @@
             justify-content: center;
             font-size: 24px;
             border: 2px solid var(--border-color);
+            transition: all 0.3s;
         }
 
-        .team-info {
-            display: flex;
-            flex-direction: column;
+        .team:hover .team-logo {
+            border-color: var(--teal-light);
+            box-shadow: var(--glow);
         }
+
+        .team-info { display: flex; flex-direction: column; }
 
         .team-name {
             font-family: 'Russo One', sans-serif;
@@ -305,7 +410,10 @@
             color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 1px;
+            transition: color 0.3s;
         }
+
+        .team:hover .team-name { color: var(--teal-light); }
 
         .team-location {
             font-size: 12px;
@@ -326,6 +434,12 @@
             color: white;
             line-height: 1;
             text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .match-card:hover .score-value {
+            color: var(--teal-light);
+            text-shadow: 0 0 20px rgba(20, 184, 166, 0.5);
         }
 
         .score-separator {
@@ -345,11 +459,7 @@
             color: var(--text-muted);
         }
 
-        .match-date {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .match-date { display: flex; align-items: center; gap: 8px; }
 
         .match-result {
             font-weight: 600;
@@ -363,6 +473,14 @@
             border-radius: 16px;
             padding: 25px;
             backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: slideInRight 0.6s ease-out 0.3s forwards;
+            transition: all 0.3s;
+        }
+
+        .top-card:hover {
+            border-color: var(--teal-light);
+            box-shadow: var(--glow);
         }
 
         .leaderboard-table {
@@ -385,17 +503,17 @@
             padding: 12px 15px;
             background: rgba(15, 35, 35, 0.6);
             border-radius: 8px;
+            transition: all 0.3s;
         }
 
-        .leaderboard-table tr td:last-child {
-            text-align: right;
+        .leaderboard-table tr:hover td {
+            background: rgba(20, 184, 166, 0.15);
+            transform: translateX(5px);
         }
 
-        .player-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .leaderboard-table tr td:last-child { text-align: right; }
+
+        .player-row { display: flex; align-items: center; gap: 12px; }
 
         .rank {
             font-family: 'Russo One', sans-serif;
@@ -403,9 +521,10 @@
             width: 28px;
             text-align: center;
             color: var(--text-muted);
+            transition: all 0.3s;
         }
 
-        .rank.gold { color: #fbbf24; }
+        .rank.gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
         .rank.silver { color: #94a3b8; }
         .rank.bronze { color: #b45309; }
 
@@ -417,18 +536,34 @@
             background-size: cover;
             image-rendering: pixelated;
             border: 2px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .leaderboard-table tr:hover .player-avatar {
+            border-color: var(--teal-light);
+            box-shadow: var(--glow);
+            transform: scale(1.1) rotate(5deg);
         }
 
         .player-name {
             font-weight: 600;
             font-size: 14px;
             color: var(--text-main);
+            transition: color 0.3s;
         }
+
+        .leaderboard-table tr:hover .player-name { color: var(--teal-light); }
 
         .stat-value {
             font-family: 'Russo One', sans-serif;
             font-size: 18px;
             color: var(--teal-light);
+            transition: all 0.3s;
+        }
+
+        .leaderboard-table tr:hover .stat-value {
+            transform: scale(1.2);
+            text-shadow: 0 0 15px rgba(20, 184, 166, 0.7);
         }
 
         .loading {
@@ -436,9 +571,11 @@
             color: var(--text-muted);
             padding: 40px;
             font-size: 16px;
+            background: linear-gradient(90deg, transparent, rgba(20,184,166,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
         }
 
-        /* Обновлённая кнопка - меньше и без эмодзи */
         .refresh-btn {
             display: block;
             width: 100%;
@@ -454,12 +591,28 @@
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .refresh-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .refresh-btn:hover::before { left: 100%; }
 
         .refresh-btn:hover {
             background: var(--teal-light);
             transform: translateY(-2px);
+            box-shadow: var(--glow);
         }
+
+        .refresh-btn:active { transform: translateY(0) scale(0.98); }
 
         .refresh-btn:disabled {
             opacity: 0.6;
@@ -473,6 +626,7 @@
             border-top: 2px solid var(--border-color);
             padding: 30px 0;
             margin-top: 40px;
+            animation: fadeIn 1s ease-out 0.5s both;
         }
 
         .footer-content {
@@ -500,16 +654,41 @@
             border: 2px solid var(--teal-light);
             border-radius: 8px;
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discord-link::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--teal-light);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s;
+            z-index: -1;
+        }
+
+        .discord-link:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
         }
 
         .discord-link:hover {
-            background: rgba(20, 184, 166, 0.2);
-            transform: translateY(-2px);
+            color: var(--teal-dark);
+            transform: translateY(-3px);
+            box-shadow: var(--glow);
         }
 
         .discord-icon {
             width: 24px;
             height: 24px;
+            transition: transform 0.3s;
+        }
+
+        .discord-link:hover .discord-icon {
+            animation: float 0.5s ease-in-out;
         }
 
         /* --- Responsive --- */
@@ -518,11 +697,7 @@
             .header-wrapper { flex-direction: column; height: auto; padding: 15px 0; gap: 15px; }
             .nav-menu { gap: 15px; }
             .nav-menu a { font-size: 13px; padding: 6px 12px; }
-            .match-body { 
-                flex-direction: column; 
-                gap: 20px;
-                padding: 20px;
-            }
+            .match-body { flex-direction: column; gap: 20px; padding: 20px; }
             .team { width: 100%; }
             .team.right { justify-content: flex-start; text-align: left; }
             .match-score { padding: 0; }
@@ -538,8 +713,7 @@
     <header>
         <div class="container">
             <div class="header-wrapper">
-                <!-- Логотип слева -->
-                <div class="logo-section">
+                <div class="logo-section" onclick="window.location.href='index.html'">
                     <div class="logo-shield">PHL</div>
                     <div class="logo-text">
                         <div class="logo-title">PHL STATS</div>
@@ -547,7 +721,6 @@
                     </div>
                 </div>
 
-                <!-- Меню сверху -->
                 <nav class="nav-menu">
                     <a href="#" class="active">Матчи</a>
                     <a href="#">Команды</a>
@@ -571,7 +744,7 @@
             <div class="dashboard-grid">
                 
                 <!-- Left Column: Matches -->
-                <div class="matches-column">
+                <div class="matches-column animate-slide-left">
                     <div class="section-header">
                         <h2 class="section-title">Матчи</h2>
                     </div>
@@ -717,7 +890,10 @@
                 <!-- Right Column: Top Scorers -->
                 <div class="sidebar">
                     <div class="section-header">
-                        <h2 class="section-title">Топ Бомбардиров</h2>
+                        <!-- Ссылка на strikertop.html -->
+                        <h2 class="section-title">
+                            <a href="strikertop.html" class="section-title-link">Топ Бомбардиров</a>
+                        </h2>
                     </div>
 
                     <div class="top-card">
@@ -762,13 +938,8 @@
     </footer>
 
     <script>
-        // 🔗 Ссылка на Гугл Таблицу
         const GOOGLE_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv&gid=0&single=true';
-        
-        // 🔄 CORS-прокси для локальных тестов
         const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-        
-        // Определяем источник
         const isLocal = window.location.protocol === 'file:';
         const CSV_URL = isLocal ? CORS_PROXY + encodeURIComponent(GOOGLE_CSV) : GOOGLE_CSV;
         
@@ -792,27 +963,23 @@
                 for (let i = 1; i < lines.length; i++) {
                     const line = lines[i].trim();
                     if (!line) continue;
-                    
                     const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
                     const nick = parts[0];
                     const goals = parseInt(parts[1]) || 0;
-                    
-                    if (nick && nick.length > 0) {
-                        players.push({ nick, goals });
-                    }
+                    if (nick && nick.length > 0) players.push({ nick, goals });
                 }
                 
                 if (players.length === 0) throw new Error('Нет игроков');
                 
-                // Сортировка по голам
                 players.sort((a, b) => b.goals - a.goals);
                 const top = players.slice(0, 10);
                 
-                // Заполнение таблицы
                 tbody.innerHTML = '';
                 top.forEach((player, index) => {
                     const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
                     const tr = document.createElement('tr');
+                    tr.style.opacity = '0';
+                    tr.style.animation = `fadeInUp 0.4s ease-out ${index * 0.1}s forwards`;
                     tr.innerHTML = `
                         <td>
                             <div class="player-row">
@@ -843,8 +1010,28 @@
             return div.innerHTML;
         }
 
-        // Автозагрузка
-        document.addEventListener('DOMContentLoaded', loadTopScorers);
+        // Анимация при скролле (Intersection Observer)
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTopScorers();
+            // Наблюдаем за карточками матчей для анимации при скролле
+            document.querySelectorAll('.match-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s, transform 0.5s';
+                observer.observe(card);
+            });
+        });
     </script>
 
 </body>

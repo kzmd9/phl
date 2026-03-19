@@ -113,7 +113,7 @@
             align-items: center;
             gap: 15px;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
         .logo-section:hover { transform: scale(1.03); }
@@ -132,7 +132,7 @@
             color: white;
             border: 2px solid var(--teal-light);
             animation: float 3s ease-in-out infinite;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .logo-section:hover .logo-shield {
@@ -148,7 +148,7 @@
             color: var(--teal-light);
             letter-spacing: 2px;
             line-height: 1;
-            transition: color 0.3s;
+            transition: color 0.3s ease;
         }
 
         .logo-section:hover .logo-title { color: white; text-shadow: var(--glow); }
@@ -169,7 +169,7 @@
             font-size: 15px;
             padding: 8px 16px;
             border-radius: 6px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
             position: relative;
@@ -182,7 +182,7 @@
             bottom: 0; left: 50%;
             width: 0; height: 2px;
             background: var(--teal-light);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             transform: translateX(-50%);
         }
 
@@ -209,12 +209,6 @@
             letter-spacing: 3px;
             text-shadow: 0 4px 20px rgba(20, 184, 166, 0.4);
             animation: pulseGlow 3s ease-in-out infinite;
-        }
-
-        .season-subtitle {
-            color: var(--text-muted);
-            font-size: 16px;
-            animation: fadeIn 1s ease-out 0.3s both;
         }
 
         /* --- Main Content --- */
@@ -249,7 +243,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         /* Ссылка на топ */
@@ -259,7 +253,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .section-title-link:hover {
@@ -275,7 +269,7 @@
             height: 28px;
             background: var(--teal-light);
             border-radius: 2px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .section-title-link:hover::before {
@@ -287,7 +281,7 @@
             font-size: 18px;
             opacity: 0;
             transform: translateX(-5px);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             color: var(--teal-light);
         }
 
@@ -377,7 +371,7 @@
             align-items: center;
             gap: 15px;
             flex: 1;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
         .team:hover { transform: scale(1.05); }
@@ -394,7 +388,7 @@
             justify-content: center;
             font-size: 24px;
             border: 2px solid var(--border-color);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .team:hover .team-logo {
@@ -410,7 +404,7 @@
             color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: color 0.3s;
+            transition: color 0.3s ease;
         }
 
         .team:hover .team-name { color: var(--teal-light); }
@@ -434,7 +428,7 @@
             color: white;
             line-height: 1;
             text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .match-card:hover .score-value {
@@ -475,7 +469,7 @@
             backdrop-filter: blur(10px);
             opacity: 0;
             animation: slideInRight 0.6s ease-out 0.3s forwards;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .top-card:hover {
@@ -503,7 +497,7 @@
             padding: 12px 15px;
             background: rgba(15, 35, 35, 0.6);
             border-radius: 8px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .leaderboard-table tr:hover td {
@@ -511,9 +505,16 @@
             transform: translateX(5px);
         }
 
-        .leaderboard-table tr td:last-child { text-align: right; }
+        .leaderboard-table tr td:last-child { 
+            text-align: right;
+            min-width: 60px;
+        }
 
-        .player-row { display: flex; align-items: center; gap: 12px; }
+        .player-row { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+        }
 
         .rank {
             font-family: 'Russo One', sans-serif;
@@ -521,7 +522,7 @@
             width: 28px;
             text-align: center;
             color: var(--text-muted);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .rank.gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
@@ -536,34 +537,44 @@
             background-size: cover;
             image-rendering: pixelated;
             border: 2px solid var(--border-color);
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
         }
 
         .leaderboard-table tr:hover .player-avatar {
             border-color: var(--teal-light);
-            box-shadow: var(--glow);
-            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.4);
+            transform: scale(1.08);
         }
 
         .player-name {
             font-weight: 600;
             font-size: 14px;
             color: var(--text-main);
-            transition: color 0.3s;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
         }
 
-        .leaderboard-table tr:hover .player-name { color: var(--teal-light); }
+        .leaderboard-table tr:hover .player-name { 
+            color: var(--teal-light);
+            text-shadow: 0 0 10px rgba(20, 184, 166, 0.4);
+        }
 
         .stat-value {
             font-family: 'Russo One', sans-serif;
             font-size: 18px;
             color: var(--teal-light);
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            display: inline-block;
         }
 
         .leaderboard-table tr:hover .stat-value {
-            transform: scale(1.2);
-            text-shadow: 0 0 15px rgba(20, 184, 166, 0.7);
+            transform: scale(1.1);
+            text-shadow: 0 0 12px rgba(20, 184, 166, 0.6);
         }
 
         .loading {
@@ -588,7 +599,7 @@
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
             position: relative;
@@ -601,7 +612,7 @@
             top: 0; left: -100%;
             width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
+            transition: left 0.5s ease;
         }
 
         .refresh-btn:hover::before { left: 100%; }
@@ -653,7 +664,7 @@
             background: rgba(20, 184, 166, 0.1);
             border: 2px solid var(--teal-light);
             border-radius: 8px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
@@ -666,7 +677,7 @@
             background: var(--teal-light);
             transform: scaleX(0);
             transform-origin: right;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
             z-index: -1;
         }
 
@@ -684,7 +695,7 @@
         .discord-icon {
             width: 24px;
             height: 24px;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
         .discord-link:hover .discord-icon {
@@ -734,7 +745,6 @@
     <section class="hero">
         <div class="container">
             <h1 class="season-title">PHL 3 2026</h1>
-            <p class="season-subtitle">Официальная статистика сезона</p>
         </div>
     </section>
 
@@ -890,7 +900,6 @@
                 <!-- Right Column: Top Scorers -->
                 <div class="sidebar">
                     <div class="section-header">
-                        <!-- Ссылка на strikertop.html -->
                         <h2 class="section-title">
                             <a href="strikertop.html" class="section-title-link">Топ Бомбардиров</a>
                         </h2>
@@ -1010,7 +1019,7 @@
             return div.innerHTML;
         }
 
-        // Анимация при скролле (Intersection Observer)
+        // Анимация при скролле
         const observerOptions = { threshold: 0.1 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -1024,11 +1033,10 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             loadTopScorers();
-            // Наблюдаем за карточками матчей для анимации при скролле
             document.querySelectorAll('.match-card').forEach(card => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.5s, transform 0.5s';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
                 observer.observe(card);
             });
         });

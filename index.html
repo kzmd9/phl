@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCHL Stats - Статистика Хоккея в Minecraft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Russo+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --accent-cyan: #06b6d4; /* Цвет льда */
+            --accent-orange: #f97316; /* Цвет шайбы */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-family: 'Russo One', sans-serif;
+            font-size: 24px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent-cyan);
+        }
+
+        .user-btn {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .user-btn:hover {
+            transform: translateY(-2px);
+            background: #22d3ee;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 60px 0;
+            background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.1), transparent 40%);
+        }
+
+        .hero-title {
+            font-family: 'Russo One', sans-serif;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        /* --- Dashboard Grid --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- Section Styling --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 20px;
+            background: var(--accent-cyan);
+            border-radius: 2px;
+        }
+
+        /* --- Match Cards --- */
+        .matches-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .match-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .match-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-cyan);
+        }
+
+        .match-status {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .status-live { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .status-finished { background: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
+
+        .teams-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+        }
+
+        .team-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-hover);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+
+        .team-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .score-board {
+            background: var(--bg-dark);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Russo One', sans-serif;
+            font-size: 24px;
+            letter-spacing: 2px;
+            border: 1px solid var(--border-color);
+        }
+
+        .match-meta {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-muted);
+            min-width: 80px;
+        }
+
+        /* --- Sidebar Widgets --- */
+        .widget {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* --- Leaderboard Table --- */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table th {
+            text-align: left;
+            font-size: 12px;
+            color: var(--text-muted);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .leaderboard-table td {
+            padding: 15px 0;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: var(--bg-hover);
+            /* Placeholder for Minecraft Head */
+            background-image: url('https://mc-heads.net/avatar/Steve'); 
+            background-size: cover;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        /* --- Live Match Highlight --- */
+        .live-match-card {
+            background: linear-gradient(145deg, var(--bg-card), #253347);
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* --- Footer --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                MC<span>HL</span> Stats
+            </a>
+            <nav class="nav-links">
+                <a href="#" class="active">Матчи</a>
+                <a href="#">Команды</a>
+                <a href="#">Игроки</a>
+                <a href="#">Турниры</a>
+            </nav>
+            <a href="#" class="user-btn">Войти</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="hero-title">Сезон 2024 - Плей-офф</h1>
+            <p class="hero-subtitle">Следите за статистикой лучших хоккейных серверов в реальном времени.</p>
+        </section>
+
+        <div class="dashboard-grid">
+            
+            <!-- Left Column: Matches -->
+            <div class="main-content">
+                
+                <!-- Live Match Highlight -->
+                <div class="section-header">
+                    <h2 class="section-title">Прямой Эфир</h2>
+                </div>
+
+                <div class="match-card live-match-card">
+                    <div class="match-info">
+                        <div class="live-indicator">
+                            <span style="width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span>
+                            LIVE • 2 Период
+                        </div>
+                        <div class="teams-wrapper" style="margin-top: 15px;">
+                            <div class="team">
+                                <div class="team-logo" style="background: #ef4444;">🔥</div>
+                                <div class="team-name">Fire Wolves</div>
+                            </div>
+                            <div class="score-board">2 : 1</div>
+                            <div class="team">
+                                <div class="team-logo" style="background: #3b82f6;">❄️</div>
+                                <div class="team-name">Ice Giants</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="match-meta">
+                        <div>Сервер: CraftHockey</div>
+                        <div style="color: var(--accent-cyan); margin-top: 5px;">Смотреть</div>
+                    </div>
+                </div>
+
+                <!-- Recent Matches -->
+                <div class="section-header" style="margin-top: 40px;">
+                    <h2 class="section-title">Недавние матчи</h2>
+                    <a href="#" style="color: var(--accent-cyan); text-decoration: none; font-size: 14px;">Все матчи →</a>
+                </div>
+
+                <div class="matches-list">
+                    <!-- Match 1 -->
+                    <div class="match-card">
+                        <div class="match-info">
+                            <span class="match-status status-finished">Завершен</span>
+                            <div class="teams-wrapper">
+                                <div class="team">
+                                    <div class="team-logo">🛡️</div>
+                                    <div class="team-name">Knights</div>
+                                </div>
+                                <div class="score-board">4 : 3</div>
+                                <div class="team">
+                                    <div class="team-logo">⚡</div>
+                                    <div class="team-name">Lightning</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="match-meta">
+                            <div>Вчера, 18:00</div>
+                            <div>Овертайм</div>
+                        </div>
+                    </div>
+
+                    <!-- Match 2 -->
+                    <div class="match-card">
+                        <div class="match-info">
+                            <span class="match-status status-finished">Завершен</span>
+                            <div class="teams-wrapper">
+                                <div class="team">
+                                    <div class="team-logo">🐲</div>
+                                    <div class="team-name">Dragons</div>
+                                </div>
+                                <div class="score-board">1 : 5</div>
+                                <div class="team">
+                                    <div class="team-logo">🤖</div>
+                                    <div class="team-name">Cyborgs</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="match-meta">
+                            <div>Вчера, 15:30</div>
+                            <div>Основное время</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Stats & Leaderboard -->
+            <aside class="sidebar">
+                
+                <!-- Top Scorers Widget -->
+                <div class="widget">
+                    <div class="section-header">
+                        <h3 class="section-title">Топ Бомбардиров</h3>
+                    </div>
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Игрок</th>
+                                <th style="text-align: right;">Голы</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="player-avatar" style="background-image: url('https://mc-heads.net/avatar/Notch')"></div>
+                                        <span>Notch_99</span>
+                                    </div>
+                                </td>
+                                <td style="text-align: right;" class="stat-value">42</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="player-avatar" style="background-image: url('https://mc-heads.net/avatar/Jeb_')"></div>
+                                        <span>Jeb_Slayer</span>
+                                    </div>
+                                </td>
+                                <td style="text-align: right;" class="stat-value">38</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="player-avatar" style="background-image: url('https://mc-heads.net/avatar/Steve')"></div>
+                                        <span>SteveOvechkin</span>
+                                    </div>
+                                </td>
+                                <td style="text-align: right;" class="stat-value">35</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="player-avatar" style="background-image: url('https://mc-heads.net/avatar/Alex')"></div>
+                                        <span>Alex_Malkin</span>
+                                    </div>
+                                </td>
+                                <td style="text-align: right;" class="stat-value">31</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Server Status Widget -->
+                <div class="widget">
+                    <div class="section-header">
+                        <h3 class="section-title">Статус Серверов</h3>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px;">
+                        <span style="color: var(--text-muted);">CraftHockey #1</span>
+                        <span style="color: var(--success);">● Online (124)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px;">
+                        <span style="color: var(--text-muted);">BlockIce Arena</span>
+                        <span style="color: var(--success);">● Online (89)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                        <span style="color: var(--text-muted);">Pro League Srv</span>
+                        <span style="color: var(--danger);">● Offline</span>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 MCHL Stats. Not affiliated with Mojang AB.</p>
+            <div style="margin-top: 10px; display: flex; justify-content: center; gap: 20px;">
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Правила</a>
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">API</a>
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Discord</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

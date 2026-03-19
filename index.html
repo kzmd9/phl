@@ -498,16 +498,27 @@
             background: rgba(15, 35, 35, 0.6);
             border-radius: 8px;
             transition: all 0.3s ease;
+            vertical-align: middle;
+        }
+
+        /* Первая колонка - игрок (rank + avatar + name) */
+        .leaderboard-table td:first-child {
+            width: 70%;
+        }
+
+        /* Вторая колонка - голы */
+        .leaderboard-table td:last-child {
+            text-align: center;
+            min-width: 60px;
+            position: relative;
         }
 
         .leaderboard-table tr:hover td {
             background: rgba(20, 184, 166, 0.15);
-            transform: translateX(5px);
         }
 
-        .leaderboard-table tr td:last-child { 
-            text-align: right;
-            min-width: 60px;
+        .leaderboard-table tr:hover td:last-child {
+            transform: none;
         }
 
         .player-row { 
@@ -523,6 +534,7 @@
             text-align: center;
             color: var(--text-muted);
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
         .rank.gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
@@ -555,7 +567,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 150px;
         }
 
         .leaderboard-table tr:hover .player-name { 
@@ -568,13 +579,15 @@
             font-size: 18px;
             color: var(--teal-light);
             transition: all 0.3s ease;
-            min-width: 40px;
             display: inline-block;
+            position: relative;
+            text-align: center;
+            width: 100%;
         }
 
         .leaderboard-table tr:hover .stat-value {
-            transform: scale(1.1);
-            text-shadow: 0 0 12px rgba(20, 184, 166, 0.6);
+            transform: scale(1.15);
+            text-shadow: 0 0 15px rgba(20, 184, 166, 0.8);
         }
 
         .loading {
@@ -1000,7 +1013,9 @@
                                 <span class="player-name">${escapeHtml(player.nick)}</span>
                             </div>
                         </td>
-                        <td class="stat-value">${player.goals}</td>
+                        <td>
+                            <span class="stat-value">${player.goals}</span>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });

@@ -293,6 +293,7 @@
 
         .matches-list { display: flex; flex-direction: column; gap: 20px; }
 
+        /* ИСПРАВЛЕННЫЕ СТИЛИ КАРТОЧЕК */
         .match-card {
             background: var(--bg-card);
             border: 2px solid var(--border-color);
@@ -430,6 +431,8 @@
             font-size: 36px;
             color: white;
             font-weight: 700;
+            min-width: 40px;
+            text-align: center;
         }
 
         .score-separator {
@@ -921,7 +924,7 @@
     </footer>
 
     <script>
-       const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREKuwLUH99NoOBoTSBxMszE54pDGsIPV9Gf7YlRmAL9tSXG8eg4wP7Py5VfTvcBF3YbMiZJTwA-6ru/pub?output=csv';
+        const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREKuwLUH99NoOBoTSBxMszE54pDGsIPV9Gf7YlRmAL9tSXG8eg4wP7Py5VfTvcBF3YbMiZJTwA-6ru/pub?output=csv';
         const TOP_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv';
         
         const CORS_PROXIES = [
@@ -933,15 +936,13 @@
         let allMatches = [];
         let showAllMatches = false;
 
-        // Словарь логотипов команд (замени ссылки на свои)
         const TEAM_LOGOS = {
-            'Динамо Меллсити': 'https://i.imgur.com/example1.png',
-            'Метеор': 'https://i.imgur.com/example2.png',
-            'Айсберг': 'https://i.imgur.com/example3.png',
-            'Викинги': 'https://i.imgur.com/example4.png',
-            'Феникс': 'https://i.imgur.com/example5.png',
-            'Титаны': 'https://i.imgur.com/example6.png',
-            // Добавь остальные команды
+            'Динамо Меллсити': './logos/dinamo_mellsiti.png',
+            'Метеор': './logos/meteor.png',
+            'Айсберг': './logos/aysberg.png',
+            'Викинги': './logos/vikingi.png',
+            'Феникс': './logos/feniks.png',
+            'Титаны': './logos/titany.png'
         };
 
         function getTeamLogo(teamName) {
@@ -1073,7 +1074,6 @@
                     resultText = 'Основное время';
                 }
                 
-                // Получаем логотипы
                 const logo1 = match.logo1 || getTeamLogo(match.team1);
                 const logo2 = match.logo2 || getTeamLogo(match.team2);
                 

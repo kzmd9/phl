@@ -82,6 +82,11 @@
             to { transform: rotate(360deg); }
         }
 
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
         .animate-fade { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-fade-up { animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-slide-left { animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
@@ -295,6 +300,7 @@
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
+            margin-bottom: 20px;
             opacity: 0;
             animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
@@ -307,8 +313,8 @@
 
         .match-card:hover {
             border-color: var(--teal-light);
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 50px rgba(20, 184, 166, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.2);
         }
 
         .match-card.live {
@@ -318,25 +324,23 @@
 
         .match-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             padding: 12px 20px;
             background: rgba(10, 31, 31, 0.6);
             border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
-            color: var(--text-muted);
         }
 
         .match-league {
             font-weight: 700;
             color: var(--teal-light);
+            font-size: 13px;
         }
 
         .match-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
         .live-indicator {
@@ -344,12 +348,9 @@
             height: 8px;
             background: var(--danger);
             border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
             animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
         }
 
         .match-body {
@@ -357,6 +358,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 25px 30px;
+            gap: 20px;
         }
 
         .team {
@@ -364,24 +366,33 @@
             align-items: center;
             gap: 15px;
             flex: 1;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 0;
         }
 
-        .team:hover { transform: scale(1.05); }
-
-        .team.right { justify-content: flex-end; text-align: right; }
+        .team.right {
+            justify-content: flex-end;
+            text-align: right;
+            flex-direction: row-reverse;
+        }
 
         .team-logo {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 12px;
             background: var(--teal-dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
             border: 2px solid var(--border-color);
+            flex-shrink: 0;
+            overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .team-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .team:hover .team-logo {
@@ -389,7 +400,12 @@
             box-shadow: var(--glow);
         }
 
-        .team-info { display: flex; flex-direction: column; }
+        .team-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            flex: 1;
+        }
 
         .team-name {
             font-family: 'Russo One', sans-serif;
@@ -397,34 +413,27 @@
             color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
-        .team:hover .team-name { color: var(--teal-light); }
 
         .match-score {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 0 30px;
+            flex-shrink: 0;
         }
 
         .score-value {
             font-family: 'Russo One', sans-serif;
-            font-size: 48px;
+            font-size: 36px;
             color: white;
-            line-height: 1;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .match-card:hover .score-value {
-            color: var(--teal-light);
-            text-shadow: 0 0 20px rgba(20, 184, 166, 0.5);
+            font-weight: 700;
         }
 
         .score-separator {
-            font-size: 32px;
+            font-size: 24px;
             color: var(--text-muted);
             font-weight: 300;
         }
@@ -436,6 +445,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
             font-size: 13px;
             color: var(--text-muted);
         }
@@ -444,6 +455,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .match-date, .match-location, .match-result {
@@ -635,7 +647,6 @@
             font-family: monospace;
         }
 
-        /* Sync Button */
         .sync-btn {
             display: inline-flex;
             align-items: center;
@@ -654,7 +665,7 @@
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
-            margin-top: 20px;
+            margin-top: 0;
         }
 
         .sync-btn::before {
@@ -793,13 +804,14 @@
             .nav-menu { gap: 10px; }
             .nav-link { font-size: 12px; padding: 6px 12px; }
             .match-body { flex-direction: column; gap: 20px; padding: 20px; }
-            .team { width: 100%; }
-            .team.right { justify-content: flex-start; text-align: left; }
-            .match-score { padding: 0; }
-            .score-value { font-size: 36px; }
+            .team { width: 100%; justify-content: center; }
+            .team.right { flex-direction: row-reverse; }
+            .match-score { order: -1; }
+            .score-value { font-size: 28px; }
             .section-title { font-size: 20px; }
             .footer-content { flex-direction: column; text-align: center; }
-            .match-footer { flex-direction: column; gap: 10px; align-items: flex-start; }
+            .match-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .match-info-group { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -909,8 +921,9 @@
     </footer>
 
     <script>
-        const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREKuwLUH99NoOBoTSBxMszE54pDGsIPV9Gf7YlRmAL9tSXG8eg4wP7Py5VfTvcBF3YbMiZJTwA-6ru/pub?output=csv';
+       const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREKuwLUH99NoOBoTSBxMszE54pDGsIPV9Gf7YlRmAL9tSXG8eg4wP7Py5VfTvcBF3YbMiZJTwA-6ru/pub?output=csv';
         const TOP_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv';
+        
         const CORS_PROXIES = [
             'https://api.allorigins.win/raw?url=',
             'https://corsproxy.io/?',
@@ -919,6 +932,21 @@
 
         let allMatches = [];
         let showAllMatches = false;
+
+        // Словарь логотипов команд (замени ссылки на свои)
+        const TEAM_LOGOS = {
+            'Динамо Меллсити': 'https://i.imgur.com/example1.png',
+            'Метеор': 'https://i.imgur.com/example2.png',
+            'Айсберг': 'https://i.imgur.com/example3.png',
+            'Викинги': 'https://i.imgur.com/example4.png',
+            'Феникс': 'https://i.imgur.com/example5.png',
+            'Титаны': 'https://i.imgur.com/example6.png',
+            // Добавь остальные команды
+        };
+
+        function getTeamLogo(teamName) {
+            return TEAM_LOGOS[teamName] || null;
+        }
 
         async function fetchWithProxy(url) {
             try {
@@ -998,17 +1026,19 @@
                 if (!line) continue;
                 
                 const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                if (parts.length >= 7) {
+                if (parts.length >= 9) {
                     matches.push({
                         date: parts[0] || '',
                         time: parts[1] || '',
                         team1: parts[2] || '',
-                        team2: parts[3] || '',
-                        score1: parts[4] || '0',
-                        score2: parts[5] || '0',
-                        location: parts[6] || '',
-                        status: parts[7] || '',
-                        extra: parts[8] || ''
+                        logo1: parts[3] || '',
+                        team2: parts[4] || '',
+                        logo2: parts[5] || '',
+                        score1: parts[6] || '0',
+                        score2: parts[7] || '0',
+                        location: parts[8] || '',
+                        status: parts[9] || '',
+                        extra: parts[10] || ''
                     });
                 }
             }
@@ -1043,6 +1073,10 @@
                     resultText = 'Основное время';
                 }
                 
+                // Получаем логотипы
+                const logo1 = match.logo1 || getTeamLogo(match.team1);
+                const logo2 = match.logo2 || getTeamLogo(match.team2);
+                
                 const card = document.createElement('div');
                 card.className = `match-card ${isLive ? 'live' : ''}`;
                 card.style.opacity = '0';
@@ -1052,12 +1086,14 @@
                     <div class="match-header">
                         <div class="match-league">PHL</div>
                         <div class="match-status">
-                            ${isLive ? '<span class="live-indicator"></span><span style="color: var(--danger)">LIVE</span>' : 'Завершён'}
+                            ${isLive ? '<span class="live-indicator"></span>LIVE' : 'Завершён'}
                         </div>
                     </div>
                     <div class="match-body">
                         <div class="team">
-                            <div class="team-logo"></div>
+                            <div class="team-logo">
+                                ${logo1 ? `<img src="${logo1}" alt="${match.team1}" onerror="this.style.display='none';this.parentElement.textContent='${match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">` : match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                            </div>
                             <div class="team-info">
                                 <div class="team-name">${match.team1}</div>
                             </div>
@@ -1071,7 +1107,9 @@
                             <div class="team-info">
                                 <div class="team-name">${match.team2}</div>
                             </div>
-                            <div class="team-logo"></div>
+                            <div class="team-logo">
+                                ${logo2 ? `<img src="${logo2}" alt="${match.team2}" onerror="this.style.display='none';this.parentElement.textContent='${match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">` : match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                            </div>
                         </div>
                     </div>
                     <div class="match-footer">

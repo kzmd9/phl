@@ -365,6 +365,7 @@
             gap: 15px;
             flex: 1;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 0; 
         }
 
         .team:hover { transform: scale(1.05); }
@@ -372,8 +373,8 @@
         .team.right { justify-content: flex-end; text-align: right; }
 
         .team-logo {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 12px;
             background: var(--teal-dark);
             display: flex;
@@ -382,6 +383,9 @@
             font-size: 24px;
             border: 2px solid var(--border-color);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 0;
+            flex-shrink: 0;
+            flex-grow: 0;
         }
 
         .team:hover .team-logo {
@@ -389,7 +393,13 @@
             box-shadow: var(--glow);
         }
 
-        .team-info { display: flex; flex-direction: column; }
+        .team-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+        }
 
         .team-name {
             font-family: 'Russo One', sans-serif;

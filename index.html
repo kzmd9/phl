@@ -42,6 +42,7 @@
             z-index: -1;
         }
 
+        /* === АНИМАЦИИ === */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -80,6 +81,11 @@
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
         }
 
         .animate-fade { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
@@ -288,6 +294,7 @@
 
         .matches-list { display: flex; flex-direction: column; gap: 20px; }
 
+        /* === ИСПРАВЛЕННЫЕ СТИЛИ КАРТОЧЕК === */
         .match-card {
             background: var(--bg-card);
             border: 2px solid var(--border-color);
@@ -295,6 +302,7 @@
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
+            margin-bottom: 20px;
             opacity: 0;
             animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
@@ -307,8 +315,8 @@
 
         .match-card:hover {
             border-color: var(--teal-light);
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 50px rgba(20, 184, 166, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.2);
         }
 
         .match-card.live {
@@ -318,25 +326,23 @@
 
         .match-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             padding: 12px 20px;
             background: rgba(10, 31, 31, 0.6);
             border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
-            color: var(--text-muted);
         }
 
         .match-league {
             font-weight: 700;
             color: var(--teal-light);
+            font-size: 13px;
         }
 
         .match-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
         .live-indicator {
@@ -344,12 +350,9 @@
             height: 8px;
             background: var(--danger);
             border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
             animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
         }
 
         .match-body {
@@ -357,6 +360,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 25px 30px;
+            gap: 20px;
         }
 
         .team {
@@ -364,12 +368,14 @@
             align-items: center;
             gap: 15px;
             flex: 1;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 0;
         }
 
-        .team:hover { transform: scale(1.05); }
-
-        .team.right { justify-content: flex-end; text-align: right; }
+        .team.right {
+            justify-content: flex-end;
+            text-align: right;
+            flex-direction: row-reverse;
+        }
 
         .team-logo {
             width: 50px;
@@ -379,17 +385,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-family: 'Russo One', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--teal-light);
             border: 2px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            overflow: hidden;
         }
 
-        .team:hover .team-logo {
-            border-color: var(--teal-light);
-            box-shadow: var(--glow);
+        .team-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .team-info { display: flex; flex-direction: column; }
+        .team-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            flex: 1;
+        }
 
         .team-name {
             font-family: 'Russo One', sans-serif;
@@ -397,34 +413,27 @@
             color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
-        .team:hover .team-name { color: var(--teal-light); }
 
         .match-score {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 0 30px;
+            flex-shrink: 0;
         }
 
         .score-value {
             font-family: 'Russo One', sans-serif;
-            font-size: 48px;
+            font-size: 36px;
             color: white;
-            line-height: 1;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .match-card:hover .score-value {
-            color: var(--teal-light);
-            text-shadow: 0 0 20px rgba(20, 184, 166, 0.5);
+            font-weight: 700;
         }
 
         .score-separator {
-            font-size: 32px;
+            font-size: 24px;
             color: var(--text-muted);
             font-weight: 300;
         }
@@ -436,6 +445,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
             font-size: 13px;
             color: var(--text-muted);
         }
@@ -444,6 +455,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .match-date, .match-location, .match-result {
@@ -635,7 +647,6 @@
             font-family: monospace;
         }
 
-        /* Sync Button */
         .sync-btn {
             display: inline-flex;
             align-items: center;
@@ -654,7 +665,7 @@
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
-            margin-top: 20px;
+            margin-top: 0;
         }
 
         .sync-btn::before {
@@ -793,13 +804,14 @@
             .nav-menu { gap: 10px; }
             .nav-link { font-size: 12px; padding: 6px 12px; }
             .match-body { flex-direction: column; gap: 20px; padding: 20px; }
-            .team { width: 100%; }
-            .team.right { justify-content: flex-start; text-align: left; }
-            .match-score { padding: 0; }
-            .score-value { font-size: 36px; }
+            .team { width: 100%; justify-content: center; }
+            .team.right { flex-direction: row-reverse; }
+            .match-score { order: -1; }
+            .score-value { font-size: 28px; }
             .section-title { font-size: 20px; }
             .footer-content { flex-direction: column; text-align: center; }
-            .match-footer { flex-direction: column; gap: 10px; align-items: flex-start; }
+            .match-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .match-info-group { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -832,68 +844,65 @@
         </div>
     </section>
 
-<main class="main-content">
-    <div class="container">
-        <div class="dashboard-grid">
-            
-            <!-- Левая колонка: Матчи -->
-            <div class="matches-column animate-slide-left">
-                <div class="section-header">
-                    <h2 class="section-title">Матчи</h2>
-                    <button class="sync-btn" id="matchesSyncBtn" onclick="loadMatches()">
-                        <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
-                        </svg>
-                        <span>Обновить</span>
+    <main class="main-content">
+        <div class="container">
+            <div class="dashboard-grid">
+                
+                <div class="matches-column animate-slide-left">
+                    <div class="section-header">
+                        <h2 class="section-title">Матчи</h2>
+                        <button class="sync-btn" id="matchesSyncBtn" onclick="loadMatches()">
+                            <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                            </svg>
+                            <span>Обновить</span>
+                        </button>
+                    </div>
+
+                    <div class="matches-list" id="matchesList">
+                        <div class="match-card">
+                            <div class="loading">⏳ Загрузка матчей...</div>
+                        </div>
+                    </div>
+                    
+                    <button class="show-more-btn" id="showMoreBtn" onclick="toggleShowMore()" style="display: none;">
+                        Показать больше
                     </button>
                 </div>
 
-                <div class="matches-list" id="matchesList">
-                    <!-- Сюда будут загружаться матчи -->
-                    <div class="match-card">
-                        <div class="loading">⏳ Загрузка матчей...</div>
+                <div class="sidebar">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <a href="strikertop.html" class="section-title-link">Топ Бомбардиров</a>
+                        </h2>
+                        <button class="sync-btn" id="topSyncBtn" onclick="loadTopScorers()">
+                            <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                            </svg>
+                            <span>Обновить</span>
+                        </button>
+                    </div>
+
+                    <div class="top-card">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Игрок</th>
+                                    <th>Голы</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topScorersBody">
+                                <tr>
+                                    <td colspan="2" class="loading">⏳ Загрузка...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                
-                <button class="show-more-btn" id="showMoreBtn" onclick="toggleShowMore()" style="display: none;">
-                    Показать больше
-                </button>
+
             </div>
-
-            <!-- Правая колонка: Топ бомбардиров -->
-            <div class="sidebar">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <a href="strikertop.html" class="section-title-link">Топ Бомбардиров</a>
-                    </h2>
-                    <button class="sync-btn" id="topSyncBtn" onclick="loadTopScorers()">
-                        <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
-                        </svg>
-                        <span>Обновить</span>
-                    </button>
-                </div>
-
-                <div class="top-card">
-                    <table class="leaderboard-table">
-                        <thead>
-                            <tr>
-                                <th>Игрок</th>
-                                <th>Голы</th>
-                            </tr>
-                        </thead>
-                        <tbody id="topScorersBody">
-                            <tr>
-                                <td colspan="2" class="loading">⏳ Загрузка...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
         </div>
-    </div>
-</main>
+    </main>
 
     <footer>
         <div class="container">
@@ -912,314 +921,313 @@
     </footer>
 
     <script>
-        const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREKuwLUH99NoOBoTSBxMszE54pDGsIPV9Gf7YlRmAL9tSXG8eg4wP7Py5VfTvcBF3YbMiZJTwA-6ru/pub?output=csv';
-        const TOP_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv';
+        const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv';
+        const TOP_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv';
         
         const CORS_PROXIES = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
-    'https://api.codetabs.com/v1/proxy?quest='
-];
+            'https://api.allorigins.win/raw?url=',
+            'https://corsproxy.io/?',
+            'https://api.codetabs.com/v1/proxy?quest='
+        ];
 
-let allMatches = [];
-let showAllMatches = false;
+        let allMatches = [];
+        let showAllMatches = false;
 
-function getLogoFilename(teamName) {
-    if (!teamName) return '';
-    return teamName.toLowerCase().replace(/\s+/g, '_') + '.png';
-}
-
-function getTeamLogo(teamName) {
-    const filename = getLogoFilename(teamName);
-    return `./logos/${filename}`;
-}
-
-async function fetchWithProxy(url) {
-    try {
-        const response = await fetch(url);
-        if (response.ok) return await response.text();
-    } catch (e) {
-        console.log('Без прокси не вышло, пробуем прокси...');
-    }
-    
-    for (const proxy of CORS_PROXIES) {
-        try {
-            const response = await fetch(proxy + encodeURIComponent(url));
-            if (response.ok) return await response.text();
-        } catch (e) {
-            console.log(`Прокси ${proxy} не сработал`);
+        function getLogoFilename(teamName) {
+            if (!teamName) return '';
+            return teamName.toLowerCase().replace(/\s+/g, '_') + '.png';
         }
-    }
-    
-    throw new Error('Не удалось загрузить данные');
-}
 
-async function loadMatches() {
-    const container = document.getElementById('matchesList');
-    const btn = document.getElementById('matchesSyncBtn');
-    
-    if (btn) {
-        btn.classList.add('syncing');
-        btn.disabled = true;
-    }
-    
-    try {
-        const csvText = await fetchWithProxy(MATCHES_CSV);
-        allMatches = parseMatchesCSV(csvText);
-        
-        if (allMatches.length === 0) {
-            container.innerHTML = `
-                <div class="match-card">
-                    <div class="error-message">
-                        ⚠️ Нет данных в таблице
-                        <div class="error-details">Проверьте, что в таблице есть данные со 2-й строки</div>
-                    </div>
-                </div>
-            `;
-            return;
+        function getTeamLogo(teamName) {
+            const filename = getLogoFilename(teamName);
+            return `./logos/${filename}`;
         }
-        
-        renderMatches(container);
-        
-        if (btn) {
-            btn.classList.remove('syncing');
-            btn.disabled = false;
-        }
-    } catch (error) {
-        console.error('Ошибка загрузки матчей:', error);
-        container.innerHTML = `
-            <div class="match-card">
-                <div class="error-message">
-                    ❌ Ошибка загрузки матчей
-                    <div class="error-details">${error.message}</div>
-                </div>
-            </div>
-        `;
-        if (btn) {
-            btn.classList.remove('syncing');
-            btn.disabled = false;
-        }
-    }
-}
 
-function parseMatchesCSV(csv) {
-    const lines = csv.split('\n').filter(line => line.trim());
-    if (lines.length < 2) return [];
-    
-    const matches = [];
-    for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-        
-        const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-        if (parts.length >= 9) {
-            matches.push({
-                date: parts[0] || '',
-                time: parts[1] || '',
-                team1: parts[2] || '',
-                logo1: parts[3] || '',
-                team2: parts[4] || '',
-                logo2: parts[5] || '',
-                score1: parts[6] || '0',
-                score2: parts[7] || '0',
-                location: parts[8] || '',
-                status: parts[9] || '',
-                extra: parts[10] || ''
-            });
+        async function fetchWithProxy(url) {
+            try {
+                const response = await fetch(url);
+                if (response.ok) return await response.text();
+            } catch (e) {
+                console.log('Без прокси не вышло, пробуем прокси...');
+            }
+            
+            for (const proxy of CORS_PROXIES) {
+                try {
+                    const response = await fetch(proxy + encodeURIComponent(url));
+                    if (response.ok) return await response.text();
+                } catch (e) {
+                    console.log(`Прокси ${proxy} не сработал`);
+                }
+            }
+            
+            throw new Error('Не удалось загрузить данные');
         }
-    }
-    return matches;
-}
 
-function renderMatches(container) {
-    container.innerHTML = '';
-    
-    allMatches.sort((a, b) => {
-        if (a.status === 'LIVE') return -1;
-        if (b.status === 'LIVE') return 1;
-        return 0;
-    });
-    
-    const matchesToShow = showAllMatches ? allMatches : allMatches.slice(0, 5);
-    
-    if (matchesToShow.length === 0) {
-        container.innerHTML = '<div class="match-card"><div class="loading">Нет матчей</div></div>';
-        return;
-    }
-    
-    matchesToShow.forEach((match, index) => {
-        const isLive = match.status === 'LIVE';
-        
-        let resultText = 'Основное время';
-        if (match.extra.toUpperCase().includes('БУЛ')) {
-            resultText = 'По буллитам';
-        } else if (match.extra.toUpperCase().includes('ОТ')) {
-            resultText = 'Овертайм';
-        } else if (match.extra.toUpperCase().includes('ОСНОВ')) {
-            resultText = 'Основное время';
-        }
-        
-        const logo1 = match.logo1 || getTeamLogo(match.team1);
-        const logo2 = match.logo2 || getTeamLogo(match.team2);
-        
-        const card = document.createElement('div');
-        card.className = `match-card ${isLive ? 'live' : ''}`;
-        card.style.opacity = '0';
-        card.style.animation = `fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s forwards`;
-        
-        card.innerHTML = `
-            <div class="match-header">
-                <div class="match-league">PHL</div>
-                <div class="match-status">
-                    ${isLive ? '<span class="live-indicator"></span><span style="color: var(--danger)">LIVE</span>' : 'Завершён'}
-                </div>
-            </div>
-            <div class="match-body">
-                <div class="team">
-                    <div class="team-logo">
-                        <img src="${logo1}" alt="${match.team1}" onerror="this.style.display='none';this.parentElement.textContent='${match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">
-                    </div>
-                    <div class="team-info">
-                        <div class="team-name">${match.team1}</div>
-                    </div>
-                </div>
-                <div class="match-score">
-                    <span class="score-value">${match.score1}</span>
-                    <span class="score-separator">-</span>
-                    <span class="score-value">${match.score2}</span>
-                </div>
-                <div class="team right">
-                    <div class="team-info">
-                        <div class="team-name">${match.team2}</div>
-                    </div>
-                    <div class="team-logo">
-                        <img src="${logo2}" alt="${match.team2}" onerror="this.style.display='none';this.parentElement.textContent='${match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">
-                    </div>
-                </div>
-            </div>
-            <div class="match-footer">
-                <div class="match-info-group">
-                    <div class="match-date">${match.date} • ${match.time}</div>
-                    <div class="match-location">${match.location}</div>
-                    <div class="match-result">${isLive ? 'LIVE' : resultText}</div>
-                </div>
-            </div>
-        `;
-        
-        container.appendChild(card);
-    });
-    
-    const showMoreBtn = document.getElementById('showMoreBtn');
-    if (showMoreBtn) {
-        if (allMatches.length > 5) {
-            showMoreBtn.style.display = 'block';
-            showMoreBtn.textContent = showAllMatches ? 'Показать меньше' : 'Показать больше';
-        } else {
-            showMoreBtn.style.display = 'none';
-        }
-    }
-}
-
-function toggleShowMore() {
-    showAllMatches = !showAllMatches;
-    const container = document.getElementById('matchesList');
-    renderMatches(container);
-}
-
-async function loadTopScorers() {
-    const tbody = document.getElementById('topScorersBody');
-    const btn = document.getElementById('topSyncBtn');
-    
-    if (btn) {
-        btn.classList.add('syncing');
-        btn.disabled = true;
-    }
-    
-    tbody.innerHTML = '<tr><td colspan="2" class="loading">⏳ Загрузка...</td></tr>';
-    
-    try {
-        const csvText = await fetchWithProxy(TOP_CSV);
-        const lines = csvText.split('\n').filter(line => line.trim());
-        
-        if (lines.length < 2) throw new Error('Таблица пуста');
-        
-        const players = [];
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (!line) continue;
-            const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-            const nick = parts[0];
-            const goals = parseInt(parts[1]) || 0;
-            if (nick && nick.length > 0) players.push({ nick, goals });
-        }
-        
-        if (players.length === 0) throw new Error('Нет игроков в таблице');
-        
-        players.sort((a, b) => b.goals - a.goals);
-        const top = players.slice(0, 10);
-        
-        tbody.innerHTML = '';
-        top.forEach((player, index) => {
-            const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-            const tr = document.createElement('tr');
-            tr.style.opacity = '0';
-            tr.style.animation = `fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.05}s forwards`;
-            tr.innerHTML = `
-                <td>
-                    <div class="player-row-container">
-                        <div class="player-row">
-                            <span class="rank ${rankClass}">#${index + 1}</span>
-                            <div class="player-avatar" 
-                                 style="background-image: url('https://mc-heads.net/avatar/${encodeURIComponent(player.nick)}')"
-                                 onerror="this.style.background='var(--teal-dark)'">
+        async function loadMatches() {
+            const container = document.getElementById('matchesList');
+            const btn = document.getElementById('matchesSyncBtn');
+            
+            if (btn) {
+                btn.classList.add('syncing');
+                btn.disabled = true;
+            }
+            
+            try {
+                const csvText = await fetchWithProxy(MATCHES_CSV);
+                allMatches = parseMatchesCSV(csvText);
+                
+                if (allMatches.length === 0) {
+                    container.innerHTML = `
+                        <div class="match-card">
+                            <div class="error-message">
+                                ⚠️ Нет данных в таблице
+                                <div class="error-details">Проверьте, что в таблице есть данные со 2-й строки</div>
                             </div>
-                            <span class="player-name">${escapeHtml(player.nick)}</span>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                renderMatches(container);
+                
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки матчей:', error);
+                container.innerHTML = `
+                    <div class="match-card">
+                        <div class="error-message">
+                            ❌ Ошибка загрузки матчей
+                            <div class="error-details">${error.message}</div>
                         </div>
                     </div>
-                </td>
-                <td>
-                    <span class="stat-value">${player.goals}</span>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-        
-        if (btn) {
-            btn.classList.remove('syncing');
-            btn.disabled = false;
+                `;
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
+            }
         }
-        
-    } catch (error) {
-        console.error('Ошибка:', error);
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="2">
-                    <div class="error-message" style="padding: 20px;">
-                        ❌ Ошибка загрузки
-                        <div class="error-details">${error.message}</div>
+
+        function parseMatchesCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+            
+            const matches = [];
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
+                if (parts.length >= 9) {
+                    matches.push({
+                        date: parts[0] || '',
+                        time: parts[1] || '',
+                        team1: parts[2] || '',
+                        logo1: parts[3] || '',
+                        team2: parts[4] || '',
+                        logo2: parts[5] || '',
+                        score1: parts[6] || '0',
+                        score2: parts[7] || '0',
+                        location: parts[8] || '',
+                        status: parts[9] || '',
+                        extra: parts[10] || ''
+                    });
+                }
+            }
+            return matches;
+        }
+
+        function renderMatches(container) {
+            container.innerHTML = '';
+            
+            allMatches.sort((a, b) => {
+                if (a.status === 'LIVE') return -1;
+                if (b.status === 'LIVE') return 1;
+                return 0;
+            });
+            
+            const matchesToShow = showAllMatches ? allMatches : allMatches.slice(0, 5);
+            
+            if (matchesToShow.length === 0) {
+                container.innerHTML = '<div class="match-card"><div class="loading">Нет матчей</div></div>';
+                return;
+            }
+            
+            matchesToShow.forEach((match, index) => {
+                const isLive = match.status === 'LIVE';
+                
+                let resultText = 'Основное время';
+                if (match.extra.toUpperCase().includes('БУЛ')) {
+                    resultText = 'По буллитам';
+                } else if (match.extra.toUpperCase().includes('ОТ')) {
+                    resultText = 'Овертайм';
+                } else if (match.extra.toUpperCase().includes('ОСНОВ')) {
+                    resultText = 'Основное время';
+                }
+                
+                const logo1 = match.logo1 || getTeamLogo(match.team1);
+                const logo2 = match.logo2 || getTeamLogo(match.team2);
+                
+                const card = document.createElement('div');
+                card.className = `match-card ${isLive ? 'live' : ''}`;
+                card.style.opacity = '0';
+                card.style.animation = `fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s forwards`;
+                
+                card.innerHTML = `
+                    <div class="match-header">
+                        <div class="match-league">PHL</div>
+                        <div class="match-status">
+                            ${isLive ? '<span class="live-indicator"></span>LIVE' : 'Завершён'}
+                        </div>
                     </div>
-                </td>
-            </tr>
-        `;
-        if (btn) {
-            btn.classList.remove('syncing');
-            btn.disabled = false;
+                    <div class="match-body">
+                        <div class="team">
+                            <div class="team-logo">
+                                <img src="${logo1}" alt="${match.team1}" onerror="this.style.display='none';this.parentElement.textContent='${match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">
+                            </div>
+                            <div class="team-info">
+                                <div class="team-name">${match.team1}</div>
+                            </div>
+                        </div>
+                        <div class="match-score">
+                            <span class="score-value">${match.score1}</span>
+                            <span class="score-separator">-</span>
+                            <span class="score-value">${match.score2}</span>
+                        </div>
+                        <div class="team right">
+                            <div class="team-info">
+                                <div class="team-name">${match.team2}</div>
+                            </div>
+                            <div class="team-logo">
+                                <img src="${logo2}" alt="${match.team2}" onerror="this.style.display='none';this.parentElement.textContent='${match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="match-footer">
+                        <div class="match-info-group">
+                            <div class="match-date">${match.date} • ${match.time}</div>
+                            <div class="match-location">${match.location}</div>
+                            <div class="match-result">${isLive ? 'LIVE' : resultText}</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            const showMoreBtn = document.getElementById('showMoreBtn');
+            if (showMoreBtn) {
+                if (allMatches.length > 5) {
+                    showMoreBtn.style.display = 'block';
+                    showMoreBtn.textContent = showAllMatches ? 'Показать меньше' : 'Показать больше';
+                } else {
+                    showMoreBtn.style.display = 'none';
+                }
+            }
         }
-    }
-}
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+        function toggleShowMore() {
+            showAllMatches = !showAllMatches;
+            const container = document.getElementById('matchesList');
+            renderMatches(container);
+        }
+        
+        async function loadTopScorers() {
+            const tbody = document.getElementById('topScorersBody');
+            const btn = document.getElementById('topSyncBtn');
+            
+            if (btn) {
+                btn.classList.add('syncing');
+                btn.disabled = true;
+            }
+            
+            tbody.innerHTML = '<tr><td colspan="2" class="loading">⏳ Загрузка...</td></tr>';
+            
+            try {
+                const csvText = await fetchWithProxy(TOP_CSV);
+                const lines = csvText.split('\n').filter(line => line.trim());
+                
+                if (lines.length < 2) throw new Error('Таблица пуста');
+                
+                const players = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
+                    const nick = parts[0];
+                    const goals = parseInt(parts[1]) || 0;
+                    if (nick && nick.length > 0) players.push({ nick, goals });
+                }
+                
+                if (players.length === 0) throw new Error('Нет игроков в таблице');
+                
+                players.sort((a, b) => b.goals - a.goals);
+                const top = players.slice(0, 10);
+                
+                tbody.innerHTML = '';
+                top.forEach((player, index) => {
+                    const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                    const tr = document.createElement('tr');
+                    tr.style.opacity = '0';
+                    tr.style.animation = `fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.05}s forwards`;
+                    tr.innerHTML = `
+                        <td>
+                            <div class="player-row-container">
+                                <div class="player-row">
+                                    <span class="rank ${rankClass}">#${index + 1}</span>
+                                    <div class="player-avatar" 
+                                         style="background-image: url('https://mc-heads.net/avatar/${encodeURIComponent(player.nick)}')"
+                                         onerror="this.style.background='var(--teal-dark)'">
+                                    </div>
+                                    <span class="player-name">${escapeHtml(player.nick)}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="stat-value">${player.goals}</span>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="2">
+                            <div class="error-message" style="padding: 20px;">
+                                ❌ Ошибка загрузки
+                                <div class="error-details">${error.message}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-// Автозагрузка при старте страницы
-document.addEventListener('DOMContentLoaded', () => {
-    loadMatches();
-    loadTopScorers();
-});
-</script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMatches();
+            loadTopScorers();
+        });
+    </script>
 
 </body>
 </html>

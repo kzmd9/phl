@@ -20,7 +20,6 @@
             --danger: #ef4444;
             --success: #10b981;
             --glow: 0 0 20px rgba(20, 184, 166, 0.3);
-            --warning: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,7 +42,6 @@
             z-index: -1;
         }
 
-        /* --- Анимации --- */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -79,12 +77,16 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         .animate-fade { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-fade-up { animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-slide-left { animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-slide-right { animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 
-        /* --- Header --- */
         header {
             background: rgba(10, 31, 31, 0.95);
             border-bottom: 2px solid var(--teal-light);
@@ -155,7 +157,6 @@
             margin-top: 2px;
         }
 
-        /* Меню */
         .nav-menu { display: flex; gap: 15px; align-items: center; }
 
         .nav-link {
@@ -191,7 +192,6 @@
             border-color: rgba(20, 184, 166, 0.3);
         }
 
-        /* --- Hero Section --- */
         .hero {
             padding: 50px 0 30px;
             text-align: center;
@@ -209,7 +209,6 @@
             animation: pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
-        /* --- Main Content --- */
         .main-content { padding: 40px 0 60px; }
 
         .dashboard-grid {
@@ -287,7 +286,6 @@
             transform: translateX(0);
         }
 
-        /* --- Match Cards --- */
         .matches-list { display: flex; flex-direction: column; gap: 20px; }
 
         .match-card {
@@ -305,6 +303,7 @@
         .match-card:nth-child(2) { animation-delay: 0.2s; }
         .match-card:nth-child(3) { animation-delay: 0.3s; }
         .match-card:nth-child(4) { animation-delay: 0.4s; }
+        .match-card:nth-child(5) { animation-delay: 0.5s; }
 
         .match-card:hover {
             border-color: var(--teal-light);
@@ -331,9 +330,6 @@
         .match-league {
             font-weight: 700;
             color: var(--teal-light);
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .match-status {
@@ -406,12 +402,6 @@
 
         .team:hover .team-name { color: var(--teal-light); }
 
-        .team-location {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
         .match-score {
             display: flex;
             align-items: center;
@@ -450,14 +440,28 @@
             color: var(--text-muted);
         }
 
-        .match-date { display: flex; align-items: center; gap: 8px; }
+        .match-info-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .match-date, .match-location, .match-result {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .match-location {
+            color: var(--teal-light);
+            font-weight: 600;
+        }
 
         .match-result {
             font-weight: 600;
             color: var(--teal-light);
         }
 
-        /* --- Top Scorers --- */
         .top-card {
             background: var(--bg-card);
             border: 2px solid var(--border-color);
@@ -631,26 +635,29 @@
             font-family: monospace;
         }
 
-        .refresh-btn {
-            display: block;
-            width: 100%;
-            margin-top: 20px;
-            padding: 8px 16px;
+        /* Sync Button */
+        .sync-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 24px;
             background: var(--teal-medium);
             color: white;
-            border: none;
-            border-radius: 6px;
+            border: 2px solid var(--teal-light);
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
+            margin-top: 20px;
         }
 
-        .refresh-btn::before {
+        .sync-btn::before {
             content: '';
             position: absolute;
             top: 0; left: -100%;
@@ -659,23 +666,57 @@
             transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .refresh-btn:hover::before { left: 100%; }
+        .sync-btn:hover::before { left: 100%; }
 
-        .refresh-btn:hover {
+        .sync-btn:hover {
             background: var(--teal-light);
             transform: translateY(-2px);
             box-shadow: var(--glow);
         }
 
-        .refresh-btn:active { transform: translateY(0) scale(0.98); }
+        .sync-btn:active { transform: translateY(0) scale(0.98); }
 
-        .refresh-btn:disabled {
+        .sync-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
-        /* --- Footer --- */
+        .sync-btn.syncing .sync-icon {
+            animation: rotate 1s linear infinite;
+        }
+
+        .sync-icon {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .show-more-btn {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--bg-hover);
+            color: var(--teal-light);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        .show-more-btn:hover {
+            background: var(--teal-medium);
+            border-color: var(--teal-light);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
         footer {
             background: rgba(10, 31, 31, 0.95);
             border-top: 2px solid var(--border-color);
@@ -746,7 +787,6 @@
             animation: float 0.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
-        /* --- Responsive --- */
         @media (max-width: 768px) {
             .season-title { font-size: 36px; }
             .header-wrapper { flex-direction: column; height: auto; padding: 15px 0; gap: 15px; }
@@ -759,19 +799,19 @@
             .score-value { font-size: 36px; }
             .section-title { font-size: 20px; }
             .footer-content { flex-direction: column; text-align: center; }
+            .match-footer { flex-direction: column; gap: 10px; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <header>
         <div class="container">
             <div class="header-wrapper">
                 <div class="logo-section" onclick="window.location.href='index.html'">
                     <div class="logo-shield">PHL</div>
                     <div class="logo-text">
-                        <div class="logo-title">PHL STATS</div>
+                        <div class="logo-title">PHL</div>
                         <div class="logo-subtitle">Pepeland Hockey League</div>
                     </div>
                 </div>
@@ -786,22 +826,25 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <h1 class="season-title">PHL 3 2026</h1>
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="container">
             <div class="dashboard-grid">
                 
-                <!-- Left Column: Matches -->
                 <div class="matches-column animate-slide-left">
                     <div class="section-header">
                         <h2 class="section-title">Матчи</h2>
+                        <button class="sync-btn" id="matchesSyncBtn" onclick="loadMatches()">
+                            <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                            </svg>
+                            <span>Обновить</span>
+                        </button>
                     </div>
 
                     <div class="matches-list" id="matchesList">
@@ -809,14 +852,23 @@
                             <div class="loading">⏳ Загрузка матчей...</div>
                         </div>
                     </div>
+                    
+                    <button class="show-more-btn" id="showMoreBtn" onclick="toggleShowMore()" style="display: none;">
+                        Показать больше
+                    </button>
                 </div>
 
-                <!-- Right Column: Top Scorers -->
                 <div class="sidebar">
                     <div class="section-header">
                         <h2 class="section-title">
-                            <a href="strikertop.html" class="section-title-link">Топ Снайпеов</a>
+                            <a href="strikertop.html" class="section-title-link">Топ Бомбардиров</a>
                         </h2>
+                        <button class="sync-btn" id="topSyncBtn" onclick="loadTopScorers()">
+                            <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                            </svg>
+                            <span>Обновить</span>
+                        </button>
                     </div>
 
                     <div class="top-card">
@@ -833,9 +885,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button class="refresh-btn" id="refreshBtn" onclick="loadTopScorers()">
-                            Обновить
-                        </button>
                     </div>
                 </div>
 
@@ -843,12 +892,11 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
                 <div class="copyright">
-                    &copy; 2026 PHL Stats. Pepeland Hockey League
+                    &copy; 2026 PHL. Pepeland Hockey League
                 </div>
                 <a href="https://discord.gg/cDBgBz6VgW" target="_blank" class="discord-link">
                     <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -861,11 +909,8 @@
     </footer>
 
     <script>
-        // 🔗 Матчи из Google Таблицы
-        const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREKuwLUH99NoOBoTSBxMszE54pDGsIPV9Gf7YlRmAL9tSXG8eg4wP7Py5VfTvcBF3YbMiZJTwA-6ru/pub?output=csv';
-        
-        // 🔗 Топ бомбардиров из Google Таблицы (отдельный лист)
-        const TOP_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv';
+        const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv';
+        const TOP_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv';
         
         const CORS_PROXIES = [
             'https://api.allorigins.win/raw?url=',
@@ -873,9 +918,10 @@
             'https://api.codetabs.com/v1/proxy?quest='
         ];
 
-        // Загрузка с несколькими прокси
+        let allMatches = [];
+        let showAllMatches = false;
+
         async function fetchWithProxy(url) {
-            // Пробуем без прокси сначала (для GitHub Pages)
             try {
                 const response = await fetch(url);
                 if (response.ok) return await response.text();
@@ -883,7 +929,6 @@
                 console.log('Без прокси не вышло, пробуем прокси...');
             }
             
-            // Пробуем прокси
             for (const proxy of CORS_PROXIES) {
                 try {
                     const response = await fetch(proxy + encodeURIComponent(url));
@@ -893,19 +938,23 @@
                 }
             }
             
-            throw new Error('Не удалось загрузить данные ни через один источник');
+            throw new Error('Не удалось загрузить данные');
         }
 
-        // Загрузка матчей
         async function loadMatches() {
             const container = document.getElementById('matchesList');
-            if (!container) return;
+            const btn = document.getElementById('matchesSyncBtn');
+            
+            if (btn) {
+                btn.classList.add('syncing');
+                btn.disabled = true;
+            }
             
             try {
                 const csvText = await fetchWithProxy(MATCHES_CSV);
-                const matches = parseMatchesCSV(csvText);
+                allMatches = parseMatchesCSV(csvText);
                 
-                if (matches.length === 0) {
+                if (allMatches.length === 0) {
                     container.innerHTML = `
                         <div class="match-card">
                             <div class="error-message">
@@ -917,7 +966,12 @@
                     return;
                 }
                 
-                renderMatches(matches, container);
+                renderMatches(container);
+                
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
             } catch (error) {
                 console.error('Ошибка загрузки матчей:', error);
                 container.innerHTML = `
@@ -925,14 +979,16 @@
                         <div class="error-message">
                             ❌ Ошибка загрузки матчей
                             <div class="error-details">${error.message}</div>
-                            <button class="refresh-btn" onclick="loadMatches()" style="margin-top: 15px;">Попробовать снова</button>
                         </div>
                     </div>
                 `;
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
             }
         }
 
-        // Парсинг CSV матчей
         function parseMatchesCSV(csv) {
             const lines = csv.split('\n').filter(line => line.trim());
             if (lines.length < 2) return [];
@@ -960,17 +1016,23 @@
             return matches;
         }
 
-        // Отображение матчей
-        function renderMatches(matches, container) {
+        function renderMatches(container) {
             container.innerHTML = '';
             
-            matches.sort((a, b) => {
+            allMatches.sort((a, b) => {
                 if (a.status === 'LIVE') return -1;
                 if (b.status === 'LIVE') return 1;
                 return 0;
             });
             
-            matches.forEach((match, index) => {
+            const matchesToShow = showAllMatches ? allMatches : allMatches.slice(0, 5);
+            
+            if (matchesToShow.length === 0) {
+                container.innerHTML = '<div class="match-card"><div class="loading">Нет матчей</div></div>';
+                return;
+            }
+            
+            matchesToShow.forEach((match, index) => {
                 const isLive = match.status === 'LIVE';
                 
                 let resultText = 'Основное время';
@@ -989,17 +1051,16 @@
                 
                 card.innerHTML = `
                     <div class="match-header">
-                        <div class="match-league">🏒 PHL</div>
+                        <div class="match-league">PHL</div>
                         <div class="match-status">
                             ${isLive ? '<span class="live-indicator"></span><span style="color: var(--danger)">LIVE</span>' : 'Завершён'}
                         </div>
                     </div>
                     <div class="match-body">
                         <div class="team">
-                            <div class="team-logo">🟢</div>
+                            <div class="team-logo"></div>
                             <div class="team-info">
                                 <div class="team-name">${match.team1}</div>
-                                <div class="team-location">${match.location}</div>
                             </div>
                         </div>
                         <div class="match-score">
@@ -1010,25 +1071,47 @@
                         <div class="team right">
                             <div class="team-info">
                                 <div class="team-name">${match.team2}</div>
-                                <div class="team-location">${match.location}</div>
                             </div>
-                            <div class="team-logo">🔴</div>
+                            <div class="team-logo"></div>
                         </div>
                     </div>
                     <div class="match-footer">
-                        <div class="match-date">📅 ${match.date} • ${match.time}</div>
-                        <div class="match-result">${isLive ? 'LIVE' : resultText}</div>
+                        <div class="match-info-group">
+                            <div class="match-date">${match.date} • ${match.time}</div>
+                            <div class="match-location">${match.location}</div>
+                            <div class="match-result">${isLive ? 'LIVE' : resultText}</div>
+                        </div>
                     </div>
                 `;
                 
                 container.appendChild(card);
             });
+            
+            const showMoreBtn = document.getElementById('showMoreBtn');
+            if (showMoreBtn) {
+                if (allMatches.length > 5) {
+                    showMoreBtn.style.display = 'block';
+                    showMoreBtn.textContent = showAllMatches ? 'Показать меньше' : 'Показать больше';
+                } else {
+                    showMoreBtn.style.display = 'none';
+                }
+            }
+        }
+
+        function toggleShowMore() {
+            showAllMatches = !showAllMatches;
+            const container = document.getElementById('matchesList');
+            renderMatches(container);
         }
         
-        // Загрузка топ бомбардиров
         async function loadTopScorers() {
             const tbody = document.getElementById('topScorersBody');
-            if (!tbody) return;
+            const btn = document.getElementById('topSyncBtn');
+            
+            if (btn) {
+                btn.classList.add('syncing');
+                btn.disabled = true;
+            }
             
             tbody.innerHTML = '<tr><td colspan="2" class="loading">⏳ Загрузка...</td></tr>';
             
@@ -1079,6 +1162,11 @@
                     tbody.appendChild(tr);
                 });
                 
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
+                
             } catch (error) {
                 console.error('Ошибка:', error);
                 tbody.innerHTML = `
@@ -1091,6 +1179,10 @@
                         </td>
                     </tr>
                 `;
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
             }
         }
         
@@ -1100,7 +1192,6 @@
             return div.innerHTML;
         }
 
-        // Загрузка при старте
         document.addEventListener('DOMContentLoaded', () => {
             loadMatches();
             loadTopScorers();

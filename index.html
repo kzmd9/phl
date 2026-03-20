@@ -916,290 +916,310 @@
         const TOP_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv';
         
         const CORS_PROXIES = [
-            'https://api.allorigins.win/raw?url=',
-            'https://corsproxy.io/?',
-            'https://api.codetabs.com/v1/proxy?quest='
-        ];
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+    'https://api.codetabs.com/v1/proxy?quest='
+];
 
-        let allMatches = [];
-        let showAllMatches = false;
+let allMatches = [];
+let showAllMatches = false;
 
-        async function fetchWithProxy(url) {
-            try {
-                const response = await fetch(url);
-                if (response.ok) return await response.text();
-            } catch (e) {
-                console.log('Без прокси не вышло, пробуем прокси...');
-            }
-            
-            for (const proxy of CORS_PROXIES) {
-                try {
-                    const response = await fetch(proxy + encodeURIComponent(url));
-                    if (response.ok) return await response.text();
-                } catch (e) {
-                    console.log(`Прокси ${proxy} не сработал`);
-                }
-            }
-            
-            throw new Error('Не удалось загрузить данные');
+function getLogoFilename(teamName) {
+    if (!teamName) return '';
+    return teamName.toLowerCase().replace(/\s+/g, '_') + '.png';
+}
+
+function getTeamLogo(teamName) {
+    const filename = getLogoFilename(teamName);
+    return `./logos/${filename}`;
+}
+
+async function fetchWithProxy(url) {
+    try {
+        const response = await fetch(url);
+        if (response.ok) return await response.text();
+    } catch (e) {
+        console.log('Без прокси не вышло, пробуем прокси...');
+    }
+    
+    for (const proxy of CORS_PROXIES) {
+        try {
+            const response = await fetch(proxy + encodeURIComponent(url));
+            if (response.ok) return await response.text();
+        } catch (e) {
+            console.log(`Прокси ${proxy} не сработал`);
         }
+    }
+    
+    throw new Error('Не удалось загрузить данные');
+}
 
-        async function loadMatches() {
-            const container = document.getElementById('matchesList');
-            const btn = document.getElementById('matchesSyncBtn');
-            
-            if (btn) {
-                btn.classList.add('syncing');
-                btn.disabled = true;
-            }
-            
-            try {
-                const csvText = await fetchWithProxy(MATCHES_CSV);
-                allMatches = parseMatchesCSV(csvText);
-                
-                if (allMatches.length === 0) {
-                    container.innerHTML = `
-                        <div class="match-card">
-                            <div class="error-message">
-                                ⚠️ Нет данных в таблице
-                                <div class="error-details">Проверьте, что в таблице есть данные со 2-й строки</div>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                renderMatches(container);
-                
-                if (btn) {
-                    btn.classList.remove('syncing');
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки матчей:', error);
-                container.innerHTML = `
-                    <div class="match-card">
-                        <div class="error-message">
-                            ❌ Ошибка загрузки матчей
-                            <div class="error-details">${error.message}</div>
-                        </div>
+async function loadMatches() {
+    const container = document.getElementById('matchesList');
+    const btn = document.getElementById('matchesSyncBtn');
+    
+    if (btn) {
+        btn.classList.add('syncing');
+        btn.disabled = true;
+    }
+    
+    try {
+        const csvText = await fetchWithProxy(MATCHES_CSV);
+        allMatches = parseMatchesCSV(csvText);
+        
+        if (allMatches.length === 0) {
+            container.innerHTML = `
+                <div class="match-card">
+                    <div class="error-message">
+                        ⚠️ Нет данных в таблице
+                        <div class="error-details">Проверьте, что в таблице есть данные со 2-й строки</div>
                     </div>
-                `;
-                if (btn) {
-                    btn.classList.remove('syncing');
-                    btn.disabled = false;
-                }
-            }
-        }
-
-        function parseMatchesCSV(csv) {
-            const lines = csv.split('\n').filter(line => line.trim());
-            if (lines.length < 2) return [];
-            
-            const matches = [];
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line) continue;
-                
-                const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                if (parts.length >= 7) {
-                    matches.push({
-                        date: parts[0] || '',
-                        time: parts[1] || '',
-                        team1: parts[2] || '',
-                        team2: parts[3] || '',
-                        score1: parts[4] || '0',
-                        score2: parts[5] || '0',
-                        location: parts[6] || '',
-                        status: parts[7] || '',
-                        extra: parts[8] || ''
-                    });
-                }
-            }
-            return matches;
-        }
-
-        function renderMatches(container) {
-            container.innerHTML = '';
-            
-            allMatches.sort((a, b) => {
-                if (a.status === 'LIVE') return -1;
-                if (b.status === 'LIVE') return 1;
-                return 0;
-            });
-            
-            const matchesToShow = showAllMatches ? allMatches : allMatches.slice(0, 5);
-            
-            if (matchesToShow.length === 0) {
-                container.innerHTML = '<div class="match-card"><div class="loading">Нет матчей</div></div>';
-                return;
-            }
-            
-            matchesToShow.forEach((match, index) => {
-                const isLive = match.status === 'LIVE';
-                
-                let resultText = 'Основное время';
-                if (match.extra.toUpperCase().includes('БУЛ')) {
-                    resultText = 'По буллитам';
-                } else if (match.extra.toUpperCase().includes('ОТ')) {
-                    resultText = 'Овертайм';
-                } else if (match.extra.toUpperCase().includes('ОСНОВ')) {
-                    resultText = 'Основное время';
-                }
-                
-                const card = document.createElement('div');
-                card.className = `match-card ${isLive ? 'live' : ''}`;
-                card.style.opacity = '0';
-                card.style.animation = `fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s forwards`;
-                
-                card.innerHTML = `
-                    <div class="match-header">
-                        <div class="match-league">PHL</div>
-                        <div class="match-status">
-                            ${isLive ? '<span class="live-indicator"></span><span style="color: var(--danger)">LIVE</span>' : 'Завершён'}
-                        </div>
-                    </div>
-                    <div class="match-body">
-                        <div class="team">
-                            <div class="team-logo"></div>
-                            <div class="team-info">
-                                <div class="team-name">${match.team1}</div>
-                            </div>
-                        </div>
-                        <div class="match-score">
-                            <span class="score-value">${match.score1}</span>
-                            <span class="score-separator">-</span>
-                            <span class="score-value">${match.score2}</span>
-                        </div>
-                        <div class="team right">
-                            <div class="team-info">
-                                <div class="team-name">${match.team2}</div>
-                            </div>
-                            <div class="team-logo"></div>
-                        </div>
-                    </div>
-                    <div class="match-footer">
-                        <div class="match-info-group">
-                            <div class="match-date">${match.date} • ${match.time}</div>
-                            <div class="match-location">${match.location}</div>
-                            <div class="match-result">${isLive ? 'LIVE' : resultText}</div>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(card);
-            });
-            
-            const showMoreBtn = document.getElementById('showMoreBtn');
-            if (showMoreBtn) {
-                if (allMatches.length > 5) {
-                    showMoreBtn.style.display = 'block';
-                    showMoreBtn.textContent = showAllMatches ? 'Показать меньше' : 'Показать больше';
-                } else {
-                    showMoreBtn.style.display = 'none';
-                }
-            }
-        }
-
-        function toggleShowMore() {
-            showAllMatches = !showAllMatches;
-            const container = document.getElementById('matchesList');
-            renderMatches(container);
+                </div>
+            `;
+            return;
         }
         
-        async function loadTopScorers() {
-            const tbody = document.getElementById('topScorersBody');
-            const btn = document.getElementById('topSyncBtn');
-            
-            if (btn) {
-                btn.classList.add('syncing');
-                btn.disabled = true;
-            }
-            
-            tbody.innerHTML = '<tr><td colspan="2" class="loading">⏳ Загрузка...</td></tr>';
-            
-            try {
-                const csvText = await fetchWithProxy(TOP_CSV);
-                const lines = csvText.split('\n').filter(line => line.trim());
-                
-                if (lines.length < 2) throw new Error('Таблица пуста');
-                
-                const players = [];
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line) continue;
-                    const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                    const nick = parts[0];
-                    const goals = parseInt(parts[1]) || 0;
-                    if (nick && nick.length > 0) players.push({ nick, goals });
-                }
-                
-                if (players.length === 0) throw new Error('Нет игроков в таблице');
-                
-                players.sort((a, b) => b.goals - a.goals);
-                const top = players.slice(0, 10);
-                
-                tbody.innerHTML = '';
-                top.forEach((player, index) => {
-                    const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-                    const tr = document.createElement('tr');
-                    tr.style.opacity = '0';
-                    tr.style.animation = `fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.05}s forwards`;
-                    tr.innerHTML = `
-                        <td>
-                            <div class="player-row-container">
-                                <div class="player-row">
-                                    <span class="rank ${rankClass}">#${index + 1}</span>
-                                    <div class="player-avatar" 
-                                         style="background-image: url('https://mc-heads.net/avatar/${encodeURIComponent(player.nick)}')"
-                                         onerror="this.style.background='var(--teal-dark)'">
-                                    </div>
-                                    <span class="player-name">${escapeHtml(player.nick)}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="stat-value">${player.goals}</span>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-                
-                if (btn) {
-                    btn.classList.remove('syncing');
-                    btn.disabled = false;
-                }
-                
-            } catch (error) {
-                console.error('Ошибка:', error);
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="2">
-                            <div class="error-message" style="padding: 20px;">
-                                ❌ Ошибка загрузки
-                                <div class="error-details">${error.message}</div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                if (btn) {
-                    btn.classList.remove('syncing');
-                    btn.disabled = false;
-                }
-            }
+        renderMatches(container);
+        
+        if (btn) {
+            btn.classList.remove('syncing');
+            btn.disabled = false;
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки матчей:', error);
+        container.innerHTML = `
+            <div class="match-card">
+                <div class="error-message">
+                    ❌ Ошибка загрузки матчей
+                    <div class="error-details">${error.message}</div>
+                </div>
+            </div>
+        `;
+        if (btn) {
+            btn.classList.remove('syncing');
+            btn.disabled = false;
+        }
+    }
+}
+
+function parseMatchesCSV(csv) {
+    const lines = csv.split('\n').filter(line => line.trim());
+    if (lines.length < 2) return [];
+    
+    const matches = [];
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
+        if (parts.length >= 9) {
+            matches.push({
+                date: parts[0] || '',
+                time: parts[1] || '',
+                team1: parts[2] || '',
+                logo1: parts[3] || '',
+                team2: parts[4] || '',
+                logo2: parts[5] || '',
+                score1: parts[6] || '0',
+                score2: parts[7] || '0',
+                location: parts[8] || '',
+                status: parts[9] || '',
+                extra: parts[10] || ''
+            });
+        }
+    }
+    return matches;
+}
+
+function renderMatches(container) {
+    container.innerHTML = '';
+    
+    allMatches.sort((a, b) => {
+        if (a.status === 'LIVE') return -1;
+        if (b.status === 'LIVE') return 1;
+        return 0;
+    });
+    
+    const matchesToShow = showAllMatches ? allMatches : allMatches.slice(0, 5);
+    
+    if (matchesToShow.length === 0) {
+        container.innerHTML = '<div class="match-card"><div class="loading">Нет матчей</div></div>';
+        return;
+    }
+    
+    matchesToShow.forEach((match, index) => {
+        const isLive = match.status === 'LIVE';
+        
+        let resultText = 'Основное время';
+        if (match.extra.toUpperCase().includes('БУЛ')) {
+            resultText = 'По буллитам';
+        } else if (match.extra.toUpperCase().includes('ОТ')) {
+            resultText = 'Овертайм';
+        } else if (match.extra.toUpperCase().includes('ОСНОВ')) {
+            resultText = 'Основное время';
         }
         
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        const logo1 = match.logo1 || getTeamLogo(match.team1);
+        const logo2 = match.logo2 || getTeamLogo(match.team2);
+        
+        const card = document.createElement('div');
+        card.className = `match-card ${isLive ? 'live' : ''}`;
+        card.style.opacity = '0';
+        card.style.animation = `fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s forwards`;
+        
+        card.innerHTML = `
+            <div class="match-header">
+                <div class="match-league">PHL</div>
+                <div class="match-status">
+                    ${isLive ? '<span class="live-indicator"></span><span style="color: var(--danger)">LIVE</span>' : 'Завершён'}
+                </div>
+            </div>
+            <div class="match-body">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="${logo1}" alt="${match.team1}" onerror="this.style.display='none';this.parentElement.textContent='${match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">${match.team1}</div>
+                    </div>
+                </div>
+                <div class="match-score">
+                    <span class="score-value">${match.score1}</span>
+                    <span class="score-separator">-</span>
+                    <span class="score-value">${match.score2}</span>
+                </div>
+                <div class="team right">
+                    <div class="team-info">
+                        <div class="team-name">${match.team2}</div>
+                    </div>
+                    <div class="team-logo">
+                        <img src="${logo2}" alt="${match.team2}" onerror="this.style.display='none';this.parentElement.textContent='${match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">
+                    </div>
+                </div>
+            </div>
+            <div class="match-footer">
+                <div class="match-info-group">
+                    <div class="match-date">${match.date} • ${match.time}</div>
+                    <div class="match-location">${match.location}</div>
+                    <div class="match-result">${isLive ? 'LIVE' : resultText}</div>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(card);
+    });
+    
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    if (showMoreBtn) {
+        if (allMatches.length > 5) {
+            showMoreBtn.style.display = 'block';
+            showMoreBtn.textContent = showAllMatches ? 'Показать меньше' : 'Показать больше';
+        } else {
+            showMoreBtn.style.display = 'none';
         }
+    }
+}
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadMatches();
-            loadTopScorers();
+function toggleShowMore() {
+    showAllMatches = !showAllMatches;
+    const container = document.getElementById('matchesList');
+    renderMatches(container);
+}
+
+async function loadTopScorers() {
+    const tbody = document.getElementById('topScorersBody');
+    const btn = document.getElementById('topSyncBtn');
+    
+    if (btn) {
+        btn.classList.add('syncing');
+        btn.disabled = true;
+    }
+    
+    tbody.innerHTML = '<tr><td colspan="2" class="loading">⏳ Загрузка...</td></tr>';
+    
+    try {
+        const csvText = await fetchWithProxy(TOP_CSV);
+        const lines = csvText.split('\n').filter(line => line.trim());
+        
+        if (lines.length < 2) throw new Error('Таблица пуста');
+        
+        const players = [];
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
+            const nick = parts[0];
+            const goals = parseInt(parts[1]) || 0;
+            if (nick && nick.length > 0) players.push({ nick, goals });
+        }
+        
+        if (players.length === 0) throw new Error('Нет игроков в таблице');
+        
+        players.sort((a, b) => b.goals - a.goals);
+        const top = players.slice(0, 10);
+        
+        tbody.innerHTML = '';
+        top.forEach((player, index) => {
+            const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+            const tr = document.createElement('tr');
+            tr.style.opacity = '0';
+            tr.style.animation = `fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.05}s forwards`;
+            tr.innerHTML = `
+                <td>
+                    <div class="player-row-container">
+                        <div class="player-row">
+                            <span class="rank ${rankClass}">#${index + 1}</span>
+                            <div class="player-avatar" 
+                                 style="background-image: url('https://mc-heads.net/avatar/${encodeURIComponent(player.nick)}')"
+                                 onerror="this.style.background='var(--teal-dark)'">
+                            </div>
+                            <span class="player-name">${escapeHtml(player.nick)}</span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="stat-value">${player.goals}</span>
+                </td>
+            `;
+            tbody.appendChild(tr);
         });
-    </script>
+        
+        if (btn) {
+            btn.classList.remove('syncing');
+            btn.disabled = false;
+        }
+        
+    } catch (error) {
+        console.error('Ошибка:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="2">
+                    <div class="error-message" style="padding: 20px;">
+                        ❌ Ошибка загрузки
+                        <div class="error-details">${error.message}</div>
+                    </div>
+                </td>
+            </tr>
+        `;
+        if (btn) {
+            btn.classList.remove('syncing');
+            btn.disabled = false;
+        }
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Автозагрузка при старте страницы
+document.addEventListener('DOMContentLoaded', () => {
+    loadMatches();
+    loadTopScorers();
+});
+</script>
 
 </body>
 </html>

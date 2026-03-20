@@ -909,37 +909,15 @@
     </footer>
 
     <script>
-            
-        const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREKuwLUH99NoOBoTSBxMszE54pDGsIPV9Gf7YlRmAL9tSXG8eg4wP7Py5VfTvcBF3YbMiZJTwA-6ru/pub?output=csv';
-        const TOP_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv';
+        const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv';
+        const TOP_CSV = 'https://docs.google.com/spreadsheets/d/1mRCJZcbHU3muCfgJwYJHKR3yPy5Zz4UBudMwtEBX1Es/pub?output=csv';
         
         const CORS_PROXIES = [
             'https://api.allorigins.win/raw?url=',
             'https://corsproxy.io/?',
             'https://api.codetabs.com/v1/proxy?quest='
         ];
-// Добавь это в начало <script> (после объявления переменных)
 
-const TEAM_LOGOS = {
-    'Adjaro Prom': 'https://clovi.ru/f/0eBdRM5',
-    'CDEK Boosters': 'https://clovi.ru/f/_kFZeYG',
-    'Church of Husk': 'https://clovi.ru/f/Rx0_oh4',
-    'Deptowm Gamblers': 'https://clovi.ru/f/6hF9DVX',
-    'Dinamo Mellcity': 'https://clovi.ru/f/SW1peR5',
-    'Eternal Pnatheon': 'https://clovi.ru/f/8KaKTrP',
-    'Ghosts of the Wasteland': 'https://clovi.ru/f/pEgWyo6',
-    'Golden Carrots': 'https://clovi.ru/f/uCVgyVU',
-    'Meteop Msc': 'https://clovi.ru/f/PwN9pSK',
-    'Okayama Flames': 'https://clovi.ru/f/piIl0f6',
-    'Partiya S.O.S.I.': 'https://clovi.ru/f/sm52Pkr',
-    'Pepelivery Mascots': 'https://clovi.ru/f/UGRuo0u',
-    'The little outsiders': 'https://clovi.ru/f/fcvHWqJ',
-    'Underway luck': 'https://clovi.ru/f/iebAqAv'
-};
-
-function getTeamLogo(teamName) {
-    return TEAM_LOGOS[teamName] || null;
-}
         let allMatches = [];
         let showAllMatches = false;
 
@@ -988,99 +966,28 @@ function getTeamLogo(teamName) {
                     return;
                 }
                 
-                function renderMatches(container) {
-    container.innerHTML = '';
-    
-    allMatches.sort((a, b) => {
-        if (a.status === 'LIVE') return -1;
-        if (b.status === 'LIVE') return 1;
-        return 0;
-    });
-    
-    const matchesToShow = showAllMatches ? allMatches : allMatches.slice(0, 5);
-    
-    if (matchesToShow.length === 0) {
-        container.innerHTML = '<div class="match-card"><div class="loading">Нет матчей</div></div>';
-        return;
-    }
-    
-    matchesToShow.forEach((match, index) => {
-        const isLive = match.status === 'LIVE';
-        
-        let resultText = 'Основное время';
-        if (match.extra.toUpperCase().includes('БУЛ')) {
-            resultText = 'По буллитам';
-        } else if (match.extra.toUpperCase().includes('ОТ')) {
-            resultText = 'Овертайм';
-        } else if (match.extra.toUpperCase().includes('ОСНОВ')) {
-            resultText = 'Основное время';
+                renderMatches(container);
+                
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки матчей:', error);
+                container.innerHTML = `
+                    <div class="match-card">
+                        <div class="error-message">
+                            ❌ Ошибка загрузки матчей
+                            <div class="error-details">${error.message}</div>
+                        </div>
+                    </div>
+                `;
+                if (btn) {
+                    btn.classList.remove('syncing');
+                    btn.disabled = false;
+                }
+            }
         }
-        
-        // Получаем логотипы
-        const logo1 = match.logo1 || getTeamLogo(match.team1);
-        const logo2 = match.logo2 || getTeamLogo(match.team2);
-        
-        // Получаем инициалы для запасного варианта
-        const initials1 = match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        const initials2 = match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        
-        const card = document.createElement('div');
-        card.className = `match-card ${isLive ? 'live' : ''}`;
-        card.style.opacity = '0';
-        card.style.animation = `fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s forwards`;
-        
-        card.innerHTML = `
-            <div class="match-header">
-                <div class="match-league">PHL</div>
-                <div class="match-status">
-                    ${isLive ? '<span class="live-indicator"></span>LIVE' : 'Завершён'}
-                </div>
-            </div>
-            <div class="match-body">
-                <div class="team">
-                    <div class="team-logo">
-                        ${logo1 ? `<img src="${logo1}" alt="${match.team1}" onerror="this.style.display='none';this.parentElement.textContent='${initials1}'">` : initials1}
-                    </div>
-                    <div class="team-info">
-                        <div class="team-name">${match.team1}</div>
-                    </div>
-                </div>
-                <div class="match-score">
-                    <span class="score-value">${match.score1}</span>
-                    <span class="score-separator">-</span>
-                    <span class="score-value">${match.score2}</span>
-                </div>
-                <div class="team right">
-                    <div class="team-info">
-                        <div class="team-name">${match.team2}</div>
-                    </div>
-                    <div class="team-logo">
-                        ${logo2 ? `<img src="${logo2}" alt="${match.team2}" onerror="this.style.display='none';this.parentElement.textContent='${initials2}'">` : initials2}
-                    </div>
-                </div>
-            </div>
-            <div class="match-footer">
-                <div class="match-info-group">
-                    <div class="match-date">${match.date} • ${match.time}</div>
-                    <div class="match-location">${match.location}</div>
-                    <div class="match-result">${isLive ? 'LIVE' : resultText}</div>
-                </div>
-            </div>
-        `;
-        
-        container.appendChild(card);
-    });
-    
-    const showMoreBtn = document.getElementById('showMoreBtn');
-    if (showMoreBtn) {
-        if (allMatches.length > 5) {
-            showMoreBtn.style.display = 'block';
-            showMoreBtn.textContent = showAllMatches ? 'Показать меньше' : 'Показать больше';
-        } else {
-            showMoreBtn.style.display = 'none';
-        }
-    }
-}
 
         function parseMatchesCSV(csv) {
             const lines = csv.split('\n').filter(line => line.trim());

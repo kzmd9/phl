@@ -832,65 +832,68 @@
         </div>
     </section>
 
-    <main class="main-content">
-        <div class="container">
-            <div class="dashboard-grid">
-                
-                <div class="matches-column animate-slide-left">
-                    <div class="section-header">
-                        <h2 class="section-title">Матчи</h2>
-                        <button class="sync-btn" id="matchesSyncBtn" onclick="loadMatches()">
-                            <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
-                            </svg>
-                            <span>Обновить</span>
-                        </button>
-                    </div>
-
-                    <div class="matches-list" id="matchesList">
-                        <div class="match-card">
-                            <div class="loading">⏳ Загрузка матчей...</div>
-                        </div>
-                    </div>
-                    
-                    <button class="show-more-btn" id="showMoreBtn" onclick="toggleShowMore()" style="display: none;">
-                        Показать больше
+<main class="main-content">
+    <div class="container">
+        <div class="dashboard-grid">
+            
+            <!-- Левая колонка: Матчи -->
+            <div class="matches-column animate-slide-left">
+                <div class="section-header">
+                    <h2 class="section-title">Матчи</h2>
+                    <button class="sync-btn" id="matchesSyncBtn" onclick="loadMatches()">
+                        <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                        </svg>
+                        <span>Обновить</span>
                     </button>
                 </div>
 
-                <div class="sidebar">
-                    <div class="section-header">
-                        <h2 class="section-title">
-                            <a href="strikertop.html" class="section-title-link">Топ Бомбардиров</a>
-                        </h2>
-                        <button class="sync-btn" id="topSyncBtn" onclick="loadTopScorers()">
-                            <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
-                            </svg>
-                            <span>Обновить</span>
-                        </button>
-                    </div>
-
-                    <div class="top-card">
-                        <table class="leaderboard-table">
-                            <thead>
-                                <tr>
-                                    <th>Игрок</th>
-                                    <th>Голы</th>
-                                </tr>
-                            </thead>
-                            <tbody id="topScorersBody">
-                                <tr>
-                                    <td colspan="2" class="loading">⏳ Загрузка...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="matches-list" id="matchesList">
+                    <!-- Сюда будут загружаться матчи -->
+                    <div class="match-card">
+                        <div class="loading">⏳ Загрузка матчей...</div>
                     </div>
                 </div>
-
+                
+                <button class="show-more-btn" id="showMoreBtn" onclick="toggleShowMore()" style="display: none;">
+                    Показать больше
+                </button>
             </div>
+
+            <!-- Правая колонка: Топ бомбардиров -->
+            <div class="sidebar">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <a href="strikertop.html" class="section-title-link">Топ Бомбардиров</a>
+                    </h2>
+                    <button class="sync-btn" id="topSyncBtn" onclick="loadTopScorers()">
+                        <svg class="sync-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                        </svg>
+                        <span>Обновить</span>
+                    </button>
+                </div>
+
+                <div class="top-card">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Игрок</th>
+                                <th>Голы</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topScorersBody">
+                            <tr>
+                                <td colspan="2" class="loading">⏳ Загрузка...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
-    </main>
+    </div>
+</main>
 
     <footer>
         <div class="container">

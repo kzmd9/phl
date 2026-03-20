@@ -82,11 +82,6 @@
             to { transform: rotate(360deg); }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-
         .animate-fade { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-fade-up { animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .animate-slide-left { animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
@@ -293,7 +288,6 @@
 
         .matches-list { display: flex; flex-direction: column; gap: 20px; }
 
-        /* ИСПРАВЛЕННЫЕ СТИЛИ КАРТОЧЕК */
         .match-card {
             background: var(--bg-card);
             border: 2px solid var(--border-color);
@@ -301,7 +295,6 @@
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
-            margin-bottom: 20px;
             opacity: 0;
             animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
@@ -314,8 +307,8 @@
 
         .match-card:hover {
             border-color: var(--teal-light);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.2);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(20, 184, 166, 0.25);
         }
 
         .match-card.live {
@@ -325,23 +318,25 @@
 
         .match-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             padding: 12px 20px;
             background: rgba(10, 31, 31, 0.6);
             border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
         .match-league {
             font-weight: 700;
             color: var(--teal-light);
-            font-size: 13px;
         }
 
         .match-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-weight: 600;
-            font-size: 13px;
-            color: var(--text-muted);
         }
 
         .live-indicator {
@@ -349,9 +344,12 @@
             height: 8px;
             background: var(--danger);
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
             animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
         }
 
         .match-body {
@@ -359,7 +357,6 @@
             align-items: center;
             justify-content: space-between;
             padding: 25px 30px;
-            gap: 20px;
         }
 
         .team {
@@ -367,33 +364,24 @@
             align-items: center;
             gap: 15px;
             flex: 1;
-            min-width: 0;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .team.right {
-            justify-content: flex-end;
-            text-align: right;
-            flex-direction: row-reverse;
-        }
+        .team:hover { transform: scale(1.05); }
+
+        .team.right { justify-content: flex-end; text-align: right; }
 
         .team-logo {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 12px;
             background: var(--teal-dark);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 24px;
             border: 2px solid var(--border-color);
-            flex-shrink: 0;
-            overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .team-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .team:hover .team-logo {
@@ -401,12 +389,7 @@
             box-shadow: var(--glow);
         }
 
-        .team-info {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            flex: 1;
-        }
+        .team-info { display: flex; flex-direction: column; }
 
         .team-name {
             font-family: 'Russo One', sans-serif;
@@ -414,29 +397,34 @@
             color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        .team:hover .team-name { color: var(--teal-light); }
 
         .match-score {
             display: flex;
             align-items: center;
             gap: 15px;
-            flex-shrink: 0;
+            padding: 0 30px;
         }
 
         .score-value {
             font-family: 'Russo One', sans-serif;
-            font-size: 36px;
+            font-size: 48px;
             color: white;
-            font-weight: 700;
-            min-width: 40px;
-            text-align: center;
+            line-height: 1;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .match-card:hover .score-value {
+            color: var(--teal-light);
+            text-shadow: 0 0 20px rgba(20, 184, 166, 0.5);
         }
 
         .score-separator {
-            font-size: 24px;
+            font-size: 32px;
             color: var(--text-muted);
             font-weight: 300;
         }
@@ -448,8 +436,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
             font-size: 13px;
             color: var(--text-muted);
         }
@@ -458,7 +444,6 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            flex-wrap: wrap;
         }
 
         .match-date, .match-location, .match-result {
@@ -650,6 +635,7 @@
             font-family: monospace;
         }
 
+        /* Sync Button */
         .sync-btn {
             display: inline-flex;
             align-items: center;
@@ -668,7 +654,7 @@
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
-            margin-top: 0;
+            margin-top: 20px;
         }
 
         .sync-btn::before {
@@ -807,14 +793,13 @@
             .nav-menu { gap: 10px; }
             .nav-link { font-size: 12px; padding: 6px 12px; }
             .match-body { flex-direction: column; gap: 20px; padding: 20px; }
-            .team { width: 100%; justify-content: center; }
-            .team.right { flex-direction: row-reverse; }
-            .match-score { order: -1; }
-            .score-value { font-size: 28px; }
+            .team { width: 100%; }
+            .team.right { justify-content: flex-start; text-align: left; }
+            .match-score { padding: 0; }
+            .score-value { font-size: 36px; }
             .section-title { font-size: 20px; }
             .footer-content { flex-direction: column; text-align: center; }
-            .match-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .match-info-group { width: 100%; justify-content: space-between; }
+            .match-footer { flex-direction: column; gap: 10px; align-items: flex-start; }
         }
     </style>
 </head>
@@ -924,6 +909,7 @@
     </footer>
 
     <script>
+            
         const MATCHES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREKuwLUH99NoOBoTSBxMszE54pDGsIPV9Gf7YlRmAL9tSXG8eg4wP7Py5VfTvcBF3YbMiZJTwA-6ru/pub?output=csv';
         const TOP_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6qEFPLrt6YiJa85CdGvkaJaNDi7j3R-_0oDwX1aNd_idorz6HwffjNlr6nA1vW9YppESeN0oXCaLT/pub?output=csv';
         
@@ -932,22 +918,30 @@
             'https://corsproxy.io/?',
             'https://api.codetabs.com/v1/proxy?quest='
         ];
+// Добавь это в начало <script> (после объявления переменных)
 
+const TEAM_LOGOS = {
+    'Adjaro Prom': 'https://clovi.ru/f/0eBdRM5',
+    'CDEK Boosters': 'https://clovi.ru/f/_kFZeYG',
+    'Church of Husk': 'https://clovi.ru/f/Rx0_oh4',
+    'Deptowm Gamblers': 'https://clovi.ru/f/6hF9DVX',
+    'Dinamo Mellcity': 'https://clovi.ru/f/SW1peR5',
+    'Eternal Pnatheon': 'https://clovi.ru/f/8KaKTrP',
+    'Ghosts of the Wasteland': 'https://clovi.ru/f/pEgWyo6',
+    'Golden Carrots': 'https://clovi.ru/f/uCVgyVU',
+    'Meteop Msc': 'https://clovi.ru/f/PwN9pSK',
+    'Okayama Flames': 'https://clovi.ru/f/piIl0f6',
+    'Partiya S.O.S.I.': 'https://clovi.ru/f/sm52Pkr',
+    'Pepelivery Mascots': 'https://clovi.ru/f/UGRuo0u',
+    'The little outsiders': 'https://clovi.ru/f/fcvHWqJ',
+    'Underway luck': 'https://clovi.ru/f/iebAqAv'
+};
+
+function getTeamLogo(teamName) {
+    return TEAM_LOGOS[teamName] || null;
+}
         let allMatches = [];
         let showAllMatches = false;
-
-        const TEAM_LOGOS = {
-            'Динамо Меллсити': './logos/dinamo_mellsiti.png',
-            'Метеор': './logos/meteor.png',
-            'Айсберг': './logos/aysberg.png',
-            'Викинги': './logos/vikingi.png',
-            'Феникс': './logos/feniks.png',
-            'Титаны': './logos/titany.png'
-        };
-
-        function getTeamLogo(teamName) {
-            return TEAM_LOGOS[teamName] || null;
-        }
 
         async function fetchWithProxy(url) {
             try {
@@ -994,28 +988,99 @@
                     return;
                 }
                 
-                renderMatches(container);
-                
-                if (btn) {
-                    btn.classList.remove('syncing');
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки матчей:', error);
-                container.innerHTML = `
-                    <div class="match-card">
-                        <div class="error-message">
-                            ❌ Ошибка загрузки матчей
-                            <div class="error-details">${error.message}</div>
-                        </div>
-                    </div>
-                `;
-                if (btn) {
-                    btn.classList.remove('syncing');
-                    btn.disabled = false;
-                }
-            }
+                function renderMatches(container) {
+    container.innerHTML = '';
+    
+    allMatches.sort((a, b) => {
+        if (a.status === 'LIVE') return -1;
+        if (b.status === 'LIVE') return 1;
+        return 0;
+    });
+    
+    const matchesToShow = showAllMatches ? allMatches : allMatches.slice(0, 5);
+    
+    if (matchesToShow.length === 0) {
+        container.innerHTML = '<div class="match-card"><div class="loading">Нет матчей</div></div>';
+        return;
+    }
+    
+    matchesToShow.forEach((match, index) => {
+        const isLive = match.status === 'LIVE';
+        
+        let resultText = 'Основное время';
+        if (match.extra.toUpperCase().includes('БУЛ')) {
+            resultText = 'По буллитам';
+        } else if (match.extra.toUpperCase().includes('ОТ')) {
+            resultText = 'Овертайм';
+        } else if (match.extra.toUpperCase().includes('ОСНОВ')) {
+            resultText = 'Основное время';
         }
+        
+        // Получаем логотипы
+        const logo1 = match.logo1 || getTeamLogo(match.team1);
+        const logo2 = match.logo2 || getTeamLogo(match.team2);
+        
+        // Получаем инициалы для запасного варианта
+        const initials1 = match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        const initials2 = match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        
+        const card = document.createElement('div');
+        card.className = `match-card ${isLive ? 'live' : ''}`;
+        card.style.opacity = '0';
+        card.style.animation = `fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s forwards`;
+        
+        card.innerHTML = `
+            <div class="match-header">
+                <div class="match-league">PHL</div>
+                <div class="match-status">
+                    ${isLive ? '<span class="live-indicator"></span>LIVE' : 'Завершён'}
+                </div>
+            </div>
+            <div class="match-body">
+                <div class="team">
+                    <div class="team-logo">
+                        ${logo1 ? `<img src="${logo1}" alt="${match.team1}" onerror="this.style.display='none';this.parentElement.textContent='${initials1}'">` : initials1}
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">${match.team1}</div>
+                    </div>
+                </div>
+                <div class="match-score">
+                    <span class="score-value">${match.score1}</span>
+                    <span class="score-separator">-</span>
+                    <span class="score-value">${match.score2}</span>
+                </div>
+                <div class="team right">
+                    <div class="team-info">
+                        <div class="team-name">${match.team2}</div>
+                    </div>
+                    <div class="team-logo">
+                        ${logo2 ? `<img src="${logo2}" alt="${match.team2}" onerror="this.style.display='none';this.parentElement.textContent='${initials2}'">` : initials2}
+                    </div>
+                </div>
+            </div>
+            <div class="match-footer">
+                <div class="match-info-group">
+                    <div class="match-date">${match.date} • ${match.time}</div>
+                    <div class="match-location">${match.location}</div>
+                    <div class="match-result">${isLive ? 'LIVE' : resultText}</div>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(card);
+    });
+    
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    if (showMoreBtn) {
+        if (allMatches.length > 5) {
+            showMoreBtn.style.display = 'block';
+            showMoreBtn.textContent = showAllMatches ? 'Показать меньше' : 'Показать больше';
+        } else {
+            showMoreBtn.style.display = 'none';
+        }
+    }
+}
 
         function parseMatchesCSV(csv) {
             const lines = csv.split('\n').filter(line => line.trim());
@@ -1027,19 +1092,17 @@
                 if (!line) continue;
                 
                 const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                if (parts.length >= 9) {
+                if (parts.length >= 7) {
                     matches.push({
                         date: parts[0] || '',
                         time: parts[1] || '',
                         team1: parts[2] || '',
-                        logo1: parts[3] || '',
-                        team2: parts[4] || '',
-                        logo2: parts[5] || '',
-                        score1: parts[6] || '0',
-                        score2: parts[7] || '0',
-                        location: parts[8] || '',
-                        status: parts[9] || '',
-                        extra: parts[10] || ''
+                        team2: parts[3] || '',
+                        score1: parts[4] || '0',
+                        score2: parts[5] || '0',
+                        location: parts[6] || '',
+                        status: parts[7] || '',
+                        extra: parts[8] || ''
                     });
                 }
             }
@@ -1074,9 +1137,6 @@
                     resultText = 'Основное время';
                 }
                 
-                const logo1 = match.logo1 || getTeamLogo(match.team1);
-                const logo2 = match.logo2 || getTeamLogo(match.team2);
-                
                 const card = document.createElement('div');
                 card.className = `match-card ${isLive ? 'live' : ''}`;
                 card.style.opacity = '0';
@@ -1086,14 +1146,12 @@
                     <div class="match-header">
                         <div class="match-league">PHL</div>
                         <div class="match-status">
-                            ${isLive ? '<span class="live-indicator"></span>LIVE' : 'Завершён'}
+                            ${isLive ? '<span class="live-indicator"></span><span style="color: var(--danger)">LIVE</span>' : 'Завершён'}
                         </div>
                     </div>
                     <div class="match-body">
                         <div class="team">
-                            <div class="team-logo">
-                                ${logo1 ? `<img src="${logo1}" alt="${match.team1}" onerror="this.style.display='none';this.parentElement.textContent='${match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">` : match.team1.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
-                            </div>
+                            <div class="team-logo"></div>
                             <div class="team-info">
                                 <div class="team-name">${match.team1}</div>
                             </div>
@@ -1107,9 +1165,7 @@
                             <div class="team-info">
                                 <div class="team-name">${match.team2}</div>
                             </div>
-                            <div class="team-logo">
-                                ${logo2 ? `<img src="${logo2}" alt="${match.team2}" onerror="this.style.display='none';this.parentElement.textContent='${match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}'">` : match.team2.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
-                            </div>
+                            <div class="team-logo"></div>
                         </div>
                     </div>
                     <div class="match-footer">

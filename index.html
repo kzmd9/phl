@@ -649,23 +649,25 @@
 
         /* Sync Button */
         .sync-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 24px;
-    background: var(--teal-medium);
-    color: white;
-    border: 2px solid var(--teal-light);
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    flex-shrink: 0; /* Кнопка не сжимается */
-}
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 24px;
+            background: var(--teal-medium);
+            color: white;
+            border: 2px solid var(--teal-light);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
 
         .sync-btn::before {
             content: '';
